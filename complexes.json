@@ -1,0 +1,1002 @@
+[
+  {
+    "complex_no": "155817",
+    "complex_name": "올림픽파크포레온",
+    "district": "강동구",
+    "household_cnt": 12032,
+    "trade_volume": null,
+    "pyeong_no": "4:5:7:6:8",
+    "area_no_59": "4:5:7:6:8",
+    "rank": 1
+  },
+  {
+    "complex_no": "111515",
+    "complex_name": "헬리오시티",
+    "district": "송파구",
+    "household_cnt": 9510,
+    "trade_volume": null,
+    "pyeong_no": "7",
+    "area_no_59": "7",
+    "rank": 2
+  },
+  {
+    "complex_no": "22675",
+    "complex_name": "파크리오",
+    "district": "송파구",
+    "household_cnt": 6864,
+    "trade_volume": null,
+    "pyeong_no": "3:4:2",
+    "area_no_59": "3:4:2",
+    "rank": 3
+  },
+  {
+    "complex_no": "134062",
+    "complex_name": "디에이치퍼스티어아이파크",
+    "district": "강남구",
+    "household_cnt": 6702,
+    "trade_volume": null,
+    "pyeong_no": "5:6",
+    "area_no_59": "5:6",
+    "rank": 4
+  },
+  {
+    "complex_no": "22627",
+    "complex_name": "잠실엘스",
+    "district": "송파구",
+    "household_cnt": 5678,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 5
+  },
+  {
+    "complex_no": "22746",
+    "complex_name": "리센츠",
+    "district": "송파구",
+    "household_cnt": 5563,
+    "trade_volume": null,
+    "pyeong_no": "5:7:8:9:4:6",
+    "area_no_59": "5:7:8:9:4:6",
+    "rank": 6
+  },
+  {
+    "complex_no": "113907",
+    "complex_name": "고덕그라시움",
+    "district": "강동구",
+    "household_cnt": 4932,
+    "trade_volume": null,
+    "pyeong_no": "3:2:1:4",
+    "area_no_59": "3:2:1:4",
+    "rank": 7
+  },
+  {
+    "complex_no": "119341",
+    "complex_name": "고덕아르테온",
+    "district": "강동구",
+    "household_cnt": 4066,
+    "trade_volume": null,
+    "pyeong_no": "1:2:3:4",
+    "area_no_59": "1:2:3:4",
+    "rank": 8
+  },
+  {
+    "complex_no": "104917",
+    "complex_name": "마포래미안푸르지오",
+    "district": "마포구",
+    "household_cnt": 3885,
+    "trade_volume": null,
+    "pyeong_no": "1:3:2:4:5:15",
+    "area_no_59": "1:3:2:4:5:15",
+    "rank": 9
+  },
+  {
+    "complex_no": "19127",
+    "complex_name": "트리지움",
+    "district": "송파구",
+    "household_cnt": 3696,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 10
+  },
+  {
+    "complex_no": "108187",
+    "complex_name": "고덕래미안힐스테이트",
+    "district": "강동구",
+    "household_cnt": 3658,
+    "trade_volume": null,
+    "pyeong_no": "3:2:1:4",
+    "area_no_59": "3:2:1:4",
+    "rank": 11
+  },
+  {
+    "complex_no": "22853",
+    "complex_name": "반포자이",
+    "district": "서초구",
+    "household_cnt": 3410,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 12
+  },
+  {
+    "complex_no": "950",
+    "complex_name": "행당대림",
+    "district": "성동구",
+    "household_cnt": 3404,
+    "trade_volume": null,
+    "pyeong_no": "2",
+    "area_no_59": "2",
+    "rank": 13
+  },
+  {
+    "complex_no": "128527",
+    "complex_name": "개포자이프레지던스",
+    "district": "강남구",
+    "household_cnt": 3375,
+    "trade_volume": null,
+    "pyeong_no": "6:4:5",
+    "area_no_59": "6:4:5",
+    "rank": 14
+  },
+  {
+    "complex_no": "168097",
+    "complex_name": "메이플자이",
+    "district": "서초구",
+    "household_cnt": 3307,
+    "trade_volume": null,
+    "pyeong_no": "7:8",
+    "area_no_59": "7:8",
+    "rank": 15
+  },
+  {
+    "complex_no": "22570",
+    "complex_name": "강동롯데캐슬퍼스트",
+    "district": "강동구",
+    "household_cnt": 3226,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 16
+  },
+  {
+    "complex_no": "11698",
+    "complex_name": "도곡렉슬",
+    "district": "강남구",
+    "household_cnt": 3002,
+    "trade_volume": null,
+    "pyeong_no": "3:1:6:5:4:2",
+    "area_no_59": "3:1:6:5:4:2",
+    "rank": 17
+  },
+  {
+    "complex_no": "142155",
+    "complex_name": "래미안원베일리",
+    "district": "서초구",
+    "household_cnt": 2990,
+    "trade_volume": null,
+    "pyeong_no": "3:2",
+    "area_no_59": "3:2",
+    "rank": 18
+  },
+  {
+    "complex_no": "3118",
+    "complex_name": "선사현대",
+    "district": "강동구",
+    "household_cnt": 2938,
+    "trade_volume": null,
+    "pyeong_no": "2:1",
+    "area_no_59": "2:1",
+    "rank": 19
+  },
+  {
+    "complex_no": "180737",
+    "complex_name": "잠실래미안아이파크",
+    "district": "송파구",
+    "household_cnt": 2678,
+    "trade_volume": null,
+    "pyeong_no": "2:3:4",
+    "area_no_59": "2:3:4",
+    "rank": 20
+  },
+  {
+    "complex_no": "15011",
+    "complex_name": "레이크팰리스",
+    "district": "송파구",
+    "household_cnt": 2678,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 21
+  },
+  {
+    "complex_no": "109910",
+    "complex_name": "센트라스",
+    "district": "성동구",
+    "household_cnt": 2529,
+    "trade_volume": null,
+    "pyeong_no": "3:2:4:19:6:5:8:7",
+    "area_no_59": "3:2:4:19:6:5:8:7",
+    "rank": 22
+  },
+  {
+    "complex_no": "23759",
+    "complex_name": "래미안퍼스티지",
+    "district": "서초구",
+    "household_cnt": 2444,
+    "trade_volume": null,
+    "pyeong_no": "16:17:1",
+    "area_no_59": "16:17:1",
+    "rank": 23
+  },
+  {
+    "complex_no": "119219",
+    "complex_name": "개포래미안포레스트",
+    "district": "강남구",
+    "household_cnt": 2296,
+    "trade_volume": null,
+    "pyeong_no": "1:10",
+    "area_no_59": "1:10",
+    "rank": 24
+  },
+  {
+    "complex_no": "102235",
+    "complex_name": "고덕리엔파크3단지",
+    "district": "강동구",
+    "household_cnt": 2283,
+    "trade_volume": null,
+    "pyeong_no": "1:3",
+    "area_no_59": "1:3",
+    "rank": 25
+  },
+  {
+    "complex_no": "878",
+    "complex_name": "행당한진타운",
+    "district": "성동구",
+    "household_cnt": 2123,
+    "trade_volume": null,
+    "pyeong_no": "2",
+    "area_no_59": "2",
+    "rank": 26
+  },
+  {
+    "complex_no": "598",
+    "complex_name": "가락쌍용1차",
+    "district": "송파구",
+    "household_cnt": 2064,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 27
+  },
+  {
+    "complex_no": "867",
+    "complex_name": "한가람",
+    "district": "용산구",
+    "household_cnt": 2036,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 28
+  },
+  {
+    "complex_no": "1147",
+    "complex_name": "대흥태영(마포태영)",
+    "district": "마포구",
+    "household_cnt": 1992,
+    "trade_volume": null,
+    "pyeong_no": "2",
+    "area_no_59": "2",
+    "rank": 29
+  },
+  {
+    "complex_no": "110938",
+    "complex_name": "e편한세상옥수파크힐스",
+    "district": "성동구",
+    "household_cnt": 1976,
+    "trade_volume": null,
+    "pyeong_no": "9:10:8:7:11",
+    "area_no_59": "9:10:8:7:11",
+    "rank": 30
+  },
+  {
+    "complex_no": "112228",
+    "complex_name": "래미안블레스티지",
+    "district": "강남구",
+    "household_cnt": 1957,
+    "trade_volume": null,
+    "pyeong_no": "2:16:3:17",
+    "area_no_59": "2:16:3:17",
+    "rank": 31
+  },
+  {
+    "complex_no": "127132",
+    "complex_name": "송파시그니처롯데캐슬",
+    "district": "송파구",
+    "household_cnt": 1945,
+    "trade_volume": null,
+    "pyeong_no": "2:3:1",
+    "area_no_59": "2:3:1",
+    "rank": 32
+  },
+  {
+    "complex_no": "113432",
+    "complex_name": "래미안솔베뉴",
+    "district": "강동구",
+    "household_cnt": 1900,
+    "trade_volume": null,
+    "pyeong_no": "14:15:3:5:4",
+    "area_no_59": "14:15:3:5:4",
+    "rank": 33
+  },
+  {
+    "complex_no": "184857",
+    "complex_name": "잠실르엘",
+    "district": "송파구",
+    "household_cnt": 1865,
+    "trade_volume": null,
+    "pyeong_no": "6:3",
+    "area_no_59": "6:3",
+    "rank": 34
+  },
+  {
+    "complex_no": "117309",
+    "complex_name": "고덕롯데캐슬베네루체",
+    "district": "강동구",
+    "household_cnt": 1859,
+    "trade_volume": null,
+    "pyeong_no": "1:5",
+    "area_no_59": "1:5",
+    "rank": 35
+  },
+  {
+    "complex_no": "121977",
+    "complex_name": "고덕자이",
+    "district": "강동구",
+    "household_cnt": 1824,
+    "trade_volume": null,
+    "pyeong_no": "3:4",
+    "area_no_59": "3:4",
+    "rank": 36
+  },
+  {
+    "complex_no": "104126",
+    "complex_name": "송파위례24단지꿈에그린",
+    "district": "송파구",
+    "household_cnt": 1810,
+    "trade_volume": null,
+    "pyeong_no": "6:21:8:7:9",
+    "area_no_59": "6:21:8:7:9",
+    "rank": 37
+  },
+  {
+    "complex_no": "131685",
+    "complex_name": "흑석자이",
+    "district": "동작구",
+    "household_cnt": 1772,
+    "trade_volume": null,
+    "pyeong_no": "4:2:3:1",
+    "area_no_59": "4:2:3:1",
+    "rank": 38
+  },
+  {
+    "complex_no": "118210",
+    "complex_name": "고덕센트럴아이파크",
+    "district": "강동구",
+    "household_cnt": 1745,
+    "trade_volume": null,
+    "pyeong_no": "1:3:2",
+    "area_no_59": "1:3:2",
+    "rank": 39
+  },
+  {
+    "complex_no": "1286",
+    "complex_name": "벽산",
+    "district": "성동구",
+    "household_cnt": 1707,
+    "trade_volume": null,
+    "pyeong_no": "2:3",
+    "area_no_59": "2:3",
+    "rank": 40
+  },
+  {
+    "complex_no": "107240",
+    "complex_name": "텐즈힐1",
+    "district": "성동구",
+    "household_cnt": 1702,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 41
+  },
+  {
+    "complex_no": "3280",
+    "complex_name": "신동아리버파크",
+    "district": "동작구",
+    "household_cnt": 1696,
+    "trade_volume": null,
+    "pyeong_no": "2",
+    "area_no_59": "2",
+    "rank": 42
+  },
+  {
+    "complex_no": "121608",
+    "complex_name": "마포프레스티지자이",
+    "district": "마포구",
+    "household_cnt": 1694,
+    "trade_volume": null,
+    "pyeong_no": "1:2:4:3:15:5:6",
+    "area_no_59": "1:2:4:3:15:5:6",
+    "rank": 43
+  },
+  {
+    "complex_no": "9194",
+    "complex_name": "래미안상도3차",
+    "district": "동작구",
+    "household_cnt": 1656,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 44
+  },
+  {
+    "complex_no": "364",
+    "complex_name": "대방대림",
+    "district": "동작구",
+    "household_cnt": 1628,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 45
+  },
+  {
+    "complex_no": "19578",
+    "complex_name": "프라이어팰리스",
+    "district": "강동구",
+    "household_cnt": 1622,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 46
+  },
+  {
+    "complex_no": "107613",
+    "complex_name": "아크로리버파크",
+    "district": "서초구",
+    "household_cnt": 1612,
+    "trade_volume": null,
+    "pyeong_no": "30:31:1:3:2",
+    "area_no_59": "30:31:1:3:2",
+    "rank": 47
+  },
+  {
+    "complex_no": "180280",
+    "complex_name": "래미안대치팰리스",
+    "district": "강남구",
+    "household_cnt": 1608,
+    "trade_volume": null,
+    "pyeong_no": "2:3",
+    "area_no_59": "2:3",
+    "rank": 48
+  },
+  {
+    "complex_no": "22491",
+    "complex_name": "힐스테이트상도센트럴파크",
+    "district": "동작구",
+    "household_cnt": 1559,
+    "trade_volume": null,
+    "pyeong_no": "5:1:6",
+    "area_no_59": "5:1:6",
+    "rank": 49
+  },
+  {
+    "complex_no": "374",
+    "complex_name": "극동",
+    "district": "동작구",
+    "household_cnt": 1550,
+    "trade_volume": null,
+    "pyeong_no": "3",
+    "area_no_59": "3",
+    "rank": 50
+  },
+  {
+    "complex_no": "100692",
+    "complex_name": "래미안옥수리버젠",
+    "district": "성동구",
+    "household_cnt": 1511,
+    "trade_volume": null,
+    "pyeong_no": "2:3:1:4",
+    "area_no_59": "2:3:1:4",
+    "rank": 51
+  },
+  {
+    "complex_no": "3459",
+    "complex_name": "도원삼성래미안",
+    "district": "용산구",
+    "household_cnt": 1458,
+    "trade_volume": null,
+    "pyeong_no": "2",
+    "area_no_59": "2",
+    "rank": 52
+  },
+  {
+    "complex_no": "126726",
+    "complex_name": "서초그랑자이",
+    "district": "서초구",
+    "household_cnt": 1446,
+    "trade_volume": null,
+    "pyeong_no": "13:2:1:19",
+    "area_no_59": "13:2:1:19",
+    "rank": 53
+  },
+  {
+    "complex_no": "148651",
+    "complex_name": "마포더클래시",
+    "district": "마포구",
+    "household_cnt": 1419,
+    "trade_volume": null,
+    "pyeong_no": "3:7:5:6:4",
+    "area_no_59": "3:7:5:6:4",
+    "rank": 54
+  },
+  {
+    "complex_no": "2977",
+    "complex_name": "서울숲한신더휴",
+    "district": "성동구",
+    "household_cnt": 1410,
+    "trade_volume": null,
+    "pyeong_no": "3:2",
+    "area_no_59": "3:2",
+    "rank": 55
+  },
+  {
+    "complex_no": "100235",
+    "complex_name": "건영",
+    "district": "동작구",
+    "household_cnt": 1376,
+    "trade_volume": null,
+    "pyeong_no": "3",
+    "area_no_59": "3",
+    "rank": 56
+  },
+  {
+    "complex_no": "105735",
+    "complex_name": "강남자곡힐스테이트",
+    "district": "강남구",
+    "household_cnt": 1339,
+    "trade_volume": null,
+    "pyeong_no": "3",
+    "area_no_59": "3",
+    "rank": 57
+  },
+  {
+    "complex_no": "113151",
+    "complex_name": "디에이치아너힐즈",
+    "district": "강남구",
+    "household_cnt": 1320,
+    "trade_volume": null,
+    "pyeong_no": "20:25:30",
+    "area_no_59": "20:25:30",
+    "rank": 58
+  },
+  {
+    "complex_no": "124311",
+    "complex_name": "래미안리더스원",
+    "district": "서초구",
+    "household_cnt": 1317,
+    "trade_volume": null,
+    "pyeong_no": "1:15",
+    "area_no_59": "1:15",
+    "rank": 59
+  },
+  {
+    "complex_no": "107458",
+    "complex_name": "강남한양수자인",
+    "district": "강남구",
+    "household_cnt": 1304,
+    "trade_volume": null,
+    "pyeong_no": "1:13:12:15:14",
+    "area_no_59": "1:13:12:15:14",
+    "rank": 60
+  },
+  {
+    "complex_no": "154118",
+    "complex_name": "강동헤리티지자이",
+    "district": "강동구",
+    "household_cnt": 1299,
+    "trade_volume": null,
+    "pyeong_no": "3:1",
+    "area_no_59": "3:1",
+    "rank": 61
+  },
+  {
+    "complex_no": "547",
+    "complex_name": "두산",
+    "district": "성동구",
+    "household_cnt": 1267,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 62
+  },
+  {
+    "complex_no": "166537",
+    "complex_name": "힐스테이트e편한세상문정",
+    "district": "송파구",
+    "household_cnt": 1265,
+    "trade_volume": null,
+    "pyeong_no": "3:4",
+    "area_no_59": "3:4",
+    "rank": 63
+  },
+  {
+    "complex_no": "107901",
+    "complex_name": "서초더샵포레",
+    "district": "서초구",
+    "household_cnt": 1264,
+    "trade_volume": null,
+    "pyeong_no": "1:2:3",
+    "area_no_59": "1:2:3",
+    "rank": 64
+  },
+  {
+    "complex_no": "182057",
+    "complex_name": "청담르엘",
+    "district": "강남구",
+    "household_cnt": 1261,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 65
+  },
+  {
+    "complex_no": "114542",
+    "complex_name": "마포그랑자이",
+    "district": "마포구",
+    "household_cnt": 1248,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 66
+  },
+  {
+    "complex_no": "127671",
+    "complex_name": "강동리버스트4단지",
+    "district": "강동구",
+    "household_cnt": 1239,
+    "trade_volume": null,
+    "pyeong_no": "2",
+    "area_no_59": "2",
+    "rank": 67
+  },
+  {
+    "complex_no": "993",
+    "complex_name": "성내삼성",
+    "district": "강동구",
+    "household_cnt": 1220,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 68
+  },
+  {
+    "complex_no": "119875",
+    "complex_name": "e편한세상송파파크센트럴",
+    "district": "송파구",
+    "household_cnt": 1199,
+    "trade_volume": null,
+    "pyeong_no": "2:1:4:3",
+    "area_no_59": "2:1:4:3",
+    "rank": 69
+  },
+  {
+    "complex_no": "110936",
+    "complex_name": "e편한세상금호파크힐스",
+    "district": "성동구",
+    "household_cnt": 1193,
+    "trade_volume": null,
+    "pyeong_no": "1:2:8",
+    "area_no_59": "1:2:8",
+    "rank": 70
+  },
+  {
+    "complex_no": "2975",
+    "complex_name": "금호대우",
+    "district": "성동구",
+    "household_cnt": 1181,
+    "trade_volume": null,
+    "pyeong_no": "2:4:3",
+    "area_no_59": "2:4:3",
+    "rank": 71
+  },
+  {
+    "complex_no": "106861",
+    "complex_name": "공덕자이",
+    "district": "마포구",
+    "household_cnt": 1164,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 72
+  },
+  {
+    "complex_no": "110226",
+    "complex_name": "신금호파크자이",
+    "district": "성동구",
+    "household_cnt": 1156,
+    "trade_volume": null,
+    "pyeong_no": "1:7",
+    "area_no_59": "1:7",
+    "rank": 73
+  },
+  {
+    "complex_no": "375",
+    "complex_name": "대림",
+    "district": "동작구",
+    "household_cnt": 1152,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 74
+  },
+  {
+    "complex_no": "2976",
+    "complex_name": "대림강변타운",
+    "district": "성동구",
+    "household_cnt": 1150,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 75
+  },
+  {
+    "complex_no": "104190",
+    "complex_name": "텐즈힐2",
+    "district": "성동구",
+    "household_cnt": 1148,
+    "trade_volume": null,
+    "pyeong_no": "2:3",
+    "area_no_59": "2:3",
+    "rank": 76
+  },
+  {
+    "complex_no": "25874",
+    "complex_name": "고덕아이파크",
+    "district": "강동구",
+    "household_cnt": 1142,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 77
+  },
+  {
+    "complex_no": "104122",
+    "complex_name": "송파더센트레",
+    "district": "송파구",
+    "household_cnt": 1139,
+    "trade_volume": null,
+    "pyeong_no": "9:7:8:10",
+    "area_no_59": "9:7:8:10",
+    "rank": 78
+  },
+  {
+    "complex_no": "22789",
+    "complex_name": "상도더샵1차",
+    "district": "동작구",
+    "household_cnt": 1122,
+    "trade_volume": null,
+    "pyeong_no": "1:2:3",
+    "area_no_59": "1:2:3",
+    "rank": 79
+  },
+  {
+    "complex_no": "101887",
+    "complex_name": "반포리체",
+    "district": "서초구",
+    "household_cnt": 1119,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 80
+  },
+  {
+    "complex_no": "1179",
+    "complex_name": "옥수삼성",
+    "district": "성동구",
+    "household_cnt": 1114,
+    "trade_volume": null,
+    "pyeong_no": "2",
+    "area_no_59": "2",
+    "rank": 81
+  },
+  {
+    "complex_no": "3803",
+    "complex_name": "리버힐삼성",
+    "district": "용산구",
+    "household_cnt": 1102,
+    "trade_volume": null,
+    "pyeong_no": "6:2",
+    "area_no_59": "6:2",
+    "rank": 82
+  },
+  {
+    "complex_no": "178737",
+    "complex_name": "래미안원페를라",
+    "district": "서초구",
+    "household_cnt": 1097,
+    "trade_volume": null,
+    "pyeong_no": "1:2:3",
+    "area_no_59": "1:2:3",
+    "rank": 83
+  },
+  {
+    "complex_no": "103577",
+    "complex_name": "서초힐스",
+    "district": "서초구",
+    "household_cnt": 1082,
+    "trade_volume": null,
+    "pyeong_no": "1:2:3:4",
+    "area_no_59": "1:2:3:4",
+    "rank": 84
+  },
+  {
+    "complex_no": "380",
+    "complex_name": "사당우성2단지",
+    "district": "동작구",
+    "household_cnt": 1080,
+    "trade_volume": null,
+    "pyeong_no": "2:6",
+    "area_no_59": "2:6",
+    "rank": 85
+  },
+  {
+    "complex_no": "108832",
+    "complex_name": "서초포레스타2단지",
+    "district": "서초구",
+    "household_cnt": 1077,
+    "trade_volume": null,
+    "pyeong_no": "1:2:3",
+    "area_no_59": "1:2:3",
+    "rank": 86
+  },
+  {
+    "complex_no": "113292",
+    "complex_name": "아크로리버하임",
+    "district": "동작구",
+    "household_cnt": 1073,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 87
+  },
+  {
+    "complex_no": "107457",
+    "complex_name": "래미안포레",
+    "district": "강남구",
+    "household_cnt": 1070,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 88
+  },
+  {
+    "complex_no": "13814",
+    "complex_name": "역삼래미안",
+    "district": "강남구",
+    "household_cnt": 1050,
+    "trade_volume": null,
+    "pyeong_no": "1:2:4:3",
+    "area_no_59": "1:2:4:3",
+    "rank": 89
+  },
+  {
+    "complex_no": "111258",
+    "complex_name": "서울숲리버뷰자이",
+    "district": "성동구",
+    "household_cnt": 1034,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 90
+  },
+  {
+    "complex_no": "877",
+    "complex_name": "청계현대",
+    "district": "성동구",
+    "household_cnt": 1017,
+    "trade_volume": null,
+    "pyeong_no": "2:1",
+    "area_no_59": "2:1",
+    "rank": 91
+  },
+  {
+    "complex_no": "114335",
+    "complex_name": "신촌숲아이파크",
+    "district": "마포구",
+    "household_cnt": 1015,
+    "trade_volume": null,
+    "pyeong_no": "2:1",
+    "area_no_59": "2:1",
+    "rank": 92
+  },
+  {
+    "complex_no": "352",
+    "complex_name": "거여1단지",
+    "district": "송파구",
+    "household_cnt": 1004,
+    "trade_volume": null,
+    "pyeong_no": "5:3",
+    "area_no_59": "5:3",
+    "rank": 93
+  },
+  {
+    "complex_no": "761",
+    "complex_name": "강촌",
+    "district": "용산구",
+    "household_cnt": 1001,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 94
+  },
+  {
+    "complex_no": "141005",
+    "complex_name": "강동밀레니얼중흥S-클래스(주상복합)",
+    "district": "강동구",
+    "household_cnt": 999,
+    "trade_volume": null,
+    "pyeong_no": "5",
+    "area_no_59": "5",
+    "rank": 95
+  },
+  {
+    "complex_no": "107537",
+    "complex_name": "래미안강동팰리스(주상복합)",
+    "district": "강동구",
+    "household_cnt": 999,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 96
+  },
+  {
+    "complex_no": "3009",
+    "complex_name": "동아",
+    "district": "서초구",
+    "household_cnt": 991,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 97
+  },
+  {
+    "complex_no": "27474",
+    "complex_name": "강일리버파크3단지",
+    "district": "강동구",
+    "household_cnt": 987,
+    "trade_volume": null,
+    "pyeong_no": "1:3:4:2",
+    "area_no_59": "1:3:4:2",
+    "rank": 98
+  },
+  {
+    "complex_no": "102641",
+    "complex_name": "흑석한강센트레빌2차",
+    "district": "동작구",
+    "household_cnt": 963,
+    "trade_volume": null,
+    "pyeong_no": "1:2",
+    "area_no_59": "1:2",
+    "rank": 99
+  },
+  {
+    "complex_no": "135",
+    "complex_name": "대치삼성1차",
+    "district": "강남구",
+    "household_cnt": 960,
+    "trade_volume": null,
+    "pyeong_no": "1",
+    "area_no_59": "1",
+    "rank": 100
+  }
+]

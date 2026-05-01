@@ -1,0 +1,606 @@
+{
+  "mapping": {
+    "155817": {
+      "danjiId": "a2kgiJu",
+      "richgo_name": "올림픽파크포레온",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "111515": {
+      "danjiId": "a1zUerj",
+      "richgo_name": "헬리오시티",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "22675": {
+      "danjiId": "a8kZEWf",
+      "richgo_name": "파크리오",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "134062": {
+      "danjiId": "a7Vhppc",
+      "richgo_name": "디에이치퍼스티어아이파크",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "22627": {
+      "danjiId": "a1XtWXM",
+      "richgo_name": "잠실엘스",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "22746": {
+      "danjiId": "a0gasRS",
+      "richgo_name": "리센츠",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "113907": {
+      "danjiId": "a9ylRld",
+      "richgo_name": "고덕그라시움",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "119341": {
+      "danjiId": "a4kjqpg",
+      "richgo_name": "고덕아르테온",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "104917": {
+      "danjiId": "a4tGVUY",
+      "richgo_name": "마포래미안푸르지오",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "19127": {
+      "danjiId": "a9PtiNp",
+      "richgo_name": "트리지움",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "108187": {
+      "danjiId": "a6IDeve",
+      "richgo_name": "고덕래미안힐스테이트",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "22853": {
+      "danjiId": "a6jGQXZ",
+      "richgo_name": "반포자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "950": {
+      "danjiId": "a1CMtOn",
+      "richgo_name": "행당대림",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "128527": {
+      "danjiId": "a3Lrpvf",
+      "richgo_name": "개포자이프레지던스",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "168097": {
+      "danjiId": "a4qLSFI",
+      "richgo_name": "메이플자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "22570": {
+      "danjiId": "a6wuILc",
+      "richgo_name": "강동롯데캐슬퍼스트",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "142155": {
+      "danjiId": "a8ysXJE",
+      "richgo_name": "래미안원베일리",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "3118": {
+      "danjiId": "a1Alyph",
+      "richgo_name": "선사현대",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "180737": {
+      "danjiId": "a0DkAvk",
+      "richgo_name": "잠실래미안아이파크",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "15011": {
+      "danjiId": "a0ZvvJe",
+      "richgo_name": "레이크팰리스",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "109910": {
+      "danjiId": "a8vXJcX",
+      "richgo_name": "센트라스",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "23759": {
+      "danjiId": "a1GKgZM",
+      "richgo_name": "래미안퍼스티지",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "119219": {
+      "danjiId": "a6Gllvm",
+      "richgo_name": "개포래미안포레스트",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "102235": {
+      "danjiId": "a4EFKkh",
+      "richgo_name": "고덕리엔파크3단지",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "878": {
+      "danjiId": "a0sAONZ",
+      "richgo_name": "행당한진타운",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "598": {
+      "danjiId": "a9jHYxD",
+      "richgo_name": "가락쌍용1차",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "867": {
+      "danjiId": "a3wrHqT",
+      "richgo_name": "한가람",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "1147": {
+      "danjiId": "a3tgGZq",
+      "richgo_name": "대흥태영(마포태영)",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "110938": {
+      "danjiId": "a3KxKuI",
+      "richgo_name": "e편한세상옥수파크힐스",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "112228": {
+      "danjiId": "a6BQIqD",
+      "richgo_name": "래미안블레스티지",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "127132": {
+      "danjiId": "a3WHoRQ",
+      "richgo_name": "송파시그니처롯데캐슬",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "113432": {
+      "danjiId": "a2TJKpi",
+      "richgo_name": "래미안솔베뉴",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "184857": {
+      "danjiId": "a5YFxWm",
+      "richgo_name": "잠실르엘",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "117309": {
+      "danjiId": "a3itVbo",
+      "richgo_name": "고덕롯데캐슬베네루체",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "121977": {
+      "danjiId": "a8bWmKQ",
+      "richgo_name": "고덕자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "104126": {
+      "danjiId": "a3zmxjw",
+      "richgo_name": "송파위례24단지꿈에그린",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "131685": {
+      "danjiId": "a9nssjt",
+      "richgo_name": "흑석자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "118210": {
+      "danjiId": "a3CqoEd",
+      "richgo_name": "고덕센트럴아이파크",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "1286": {
+      "danjiId": "a7GupeW",
+      "richgo_name": "벽산",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "107240": {
+      "danjiId": "a6UdWjW",
+      "richgo_name": "텐즈힐1",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "3280": {
+      "danjiId": "a8fPZqp",
+      "richgo_name": "신동아리버파크",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "121608": {
+      "danjiId": "a6KvZvL",
+      "richgo_name": "마포프레스티지자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "9194": {
+      "danjiId": "a3Eswyl",
+      "richgo_name": "래미안상도3차",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "364": {
+      "danjiId": "a0LpIlw",
+      "richgo_name": "대방대림",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "19578": {
+      "danjiId": "a6ijBvA",
+      "richgo_name": "프라이어팰리스",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "107613": {
+      "danjiId": "a3QuPzX",
+      "richgo_name": "아크로리버파크",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "180280": {
+      "danjiId": "a6eBfVs",
+      "richgo_name": "래미안대치팰리스",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "22491": {
+      "danjiId": "a6JYGJe",
+      "richgo_name": "힐스테이트상도센트럴파크",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "374": {
+      "danjiId": "a9rGwDA",
+      "richgo_name": "극동",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "100692": {
+      "danjiId": "a2APlYr",
+      "richgo_name": "래미안옥수리버젠",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "3459": {
+      "danjiId": "a4uSyEM",
+      "richgo_name": "도원삼성래미안",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "126726": {
+      "danjiId": "a4OUpZn",
+      "richgo_name": "서초그랑자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "148651": {
+      "danjiId": "a8gmReL",
+      "richgo_name": "마포더클래시",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "2977": {
+      "danjiId": "a1lbFCs",
+      "richgo_name": "서울숲한신더휴",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "100235": {
+      "danjiId": "a5HtAnP",
+      "richgo_name": "건영",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "113151": {
+      "danjiId": "a2XnxGy",
+      "richgo_name": "디에이치아너힐즈",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "124311": {
+      "danjiId": "a4pnrfl",
+      "richgo_name": "래미안리더스원",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "154118": {
+      "danjiId": "a5hGTWo",
+      "richgo_name": "강동헤리티지자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "547": {
+      "danjiId": "a7zIQUZ",
+      "richgo_name": "두산",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "166537": {
+      "danjiId": "a8SdSnk",
+      "richgo_name": "힐스테이트e편한세상문정",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "182057": {
+      "danjiId": "a5ZWnhV",
+      "richgo_name": "청담르엘",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "114542": {
+      "danjiId": "a3guQVj",
+      "richgo_name": "마포그랑자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "127671": {
+      "danjiId": "a4anfev",
+      "richgo_name": "강동리버스트4단지",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "993": {
+      "danjiId": "a6RwuBk",
+      "richgo_name": "성내삼성",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "119875": {
+      "danjiId": "a2RjSVW",
+      "richgo_name": "e편한세상송파파크센트럴",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "110936": {
+      "danjiId": "a8qmOXu",
+      "richgo_name": "e편한세상금호파크힐스",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "2975": {
+      "danjiId": "a3SCUMU",
+      "richgo_name": "금호대우",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "106861": {
+      "danjiId": "a6aDCjB",
+      "richgo_name": "공덕자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "110226": {
+      "danjiId": "a2jtXGi",
+      "richgo_name": "신금호파크자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "375": {
+      "danjiId": "a0GeIMK",
+      "richgo_name": "대림",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "2976": {
+      "danjiId": "a5NntiI",
+      "richgo_name": "대림강변타운",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "104190": {
+      "danjiId": "a4zAOgM",
+      "richgo_name": "텐즈힐2",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "25874": {
+      "danjiId": "a9gfpVF",
+      "richgo_name": "고덕아이파크",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "104122": {
+      "danjiId": "a4vCrUb",
+      "richgo_name": "송파더센트레",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "22789": {
+      "danjiId": "a9jZylw",
+      "richgo_name": "상도더샵1차",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "101887": {
+      "danjiId": "a9qthBs",
+      "richgo_name": "반포리체",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "1179": {
+      "danjiId": "a8OjeaO",
+      "richgo_name": "옥수삼성",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "3803": {
+      "danjiId": "a9QpelZ",
+      "richgo_name": "리버힐삼성",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "380": {
+      "danjiId": "a7aqFdL",
+      "richgo_name": "사당우성2단지",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "108832": {
+      "danjiId": "a3JnfXU",
+      "richgo_name": "서초포레스타2단지",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "113292": {
+      "danjiId": "a7mBHzO",
+      "richgo_name": "아크로리버하임",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "107457": {
+      "danjiId": "a6Gllvm",
+      "richgo_name": "개포래미안포레스트",
+      "match_type": "substring",
+      "score": 0.556
+    },
+    "13814": {
+      "danjiId": "a3OhLXW",
+      "richgo_name": "역삼래미안",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "111258": {
+      "danjiId": "a5JRLet",
+      "richgo_name": "서울숲리버뷰자이",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "877": {
+      "danjiId": "a7cfhkf",
+      "richgo_name": "청계현대",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "114335": {
+      "danjiId": "a8Uxtzi",
+      "richgo_name": "신촌숲아이파크",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "352": {
+      "danjiId": "a7ZxRkx",
+      "richgo_name": "거여1단지",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "761": {
+      "danjiId": "a5PKAoB",
+      "richgo_name": "강촌",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "141005": {
+      "danjiId": "a5aNHtn",
+      "richgo_name": "강동밀레니얼중흥S-클래스(주)",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "107537": {
+      "danjiId": "a7FFbgV",
+      "richgo_name": "래미안강동팰리스",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "3009": {
+      "danjiId": "a9cvzgJ",
+      "richgo_name": "동아",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "27474": {
+      "danjiId": "a2osUhW",
+      "richgo_name": "강일리버파크3단지",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "102641": {
+      "danjiId": "a8Vgide",
+      "richgo_name": "흑석한강센트레빌2차",
+      "match_type": "exact",
+      "score": 1.0
+    },
+    "135": {
+      "danjiId": "a0fQydR",
+      "richgo_name": "대치삼성1차",
+      "match_type": "exact",
+      "score": 1.0
+    }
+  },
+  "unmatched": [
+    {
+      "complex_no": "11698",
+      "complex_name": "도곡렉슬",
+      "district": "강남구",
+      "rank": 17
+    },
+    {
+      "complex_no": "105735",
+      "complex_name": "강남자곡힐스테이트",
+      "district": "강남구",
+      "rank": 57
+    },
+    {
+      "complex_no": "107458",
+      "complex_name": "강남한양수자인",
+      "district": "강남구",
+      "rank": 60
+    },
+    {
+      "complex_no": "107901",
+      "complex_name": "서초더샵포레",
+      "district": "서초구",
+      "rank": 64
+    },
+    {
+      "complex_no": "178737",
+      "complex_name": "래미안원페를라",
+      "district": "서초구",
+      "rank": 83
+    },
+    {
+      "complex_no": "103577",
+      "complex_name": "서초힐스",
+      "district": "서초구",
+      "rank": 84
+    }
+  ]
+}

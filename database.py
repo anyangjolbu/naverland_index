@@ -16,7 +16,7 @@ from config import DB_PATH
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS complexes (
-    complex_no       TEXT PRIMARY KEY,
+    complex_no       TEXT PRIMARY KEY,        -- Naver complex_no (canonical)
     complex_name     TEXT NOT NULL,
     district         TEXT NOT NULL,
     household_cnt    INTEGER NOT NULL,
@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS complexes (
     area_no_59       TEXT,
     pyeong_no        TEXT,
     rank             INTEGER,
-    selected_at      TIMESTAMP NOT NULL
+    selected_at      TIMESTAMP NOT NULL,
+    richgo_danji_id  TEXT                     -- Richgo lookup id (nullable)
 );
 
 CREATE TABLE IF NOT EXISTS hourly_prices (
@@ -105,6 +106,10 @@ def transaction():
 def init_db() -> None:
     with transaction() as conn:
         conn.executescript(SCHEMA)
+        # Migration: add richgo_danji_id column if missing (existing DB with old schema)
+        cols = {r["name"] for r in conn.execute("PRAGMA table_info(complexes)").fetchall()}
+        if "richgo_danji_id" not in cols:
+            conn.execute("ALTER TABLE complexes ADD COLUMN richgo_danji_id TEXT")
 
 
 # ── Complexes ──────────────────────────────────────────────────────────────
@@ -113,22 +118,27 @@ def upsert_complexes(rows: Iterable[dict], selected_at: datetime) -> None:
     sql = """
     INSERT INTO complexes (
         complex_no, complex_name, district, household_cnt, trade_volume,
-        area_no_59, pyeong_no, rank, selected_at
+        area_no_59, pyeong_no, rank, selected_at, richgo_danji_id
     ) VALUES (
         :complex_no, :complex_name, :district, :household_cnt, :trade_volume,
-        :area_no_59, :pyeong_no, :rank, :selected_at
+        :area_no_59, :pyeong_no, :rank, :selected_at, :richgo_danji_id
     )
     ON CONFLICT(complex_no) DO UPDATE SET
-        complex_name  = excluded.complex_name,
-        district      = excluded.district,
-        household_cnt = excluded.household_cnt,
-        trade_volume  = excluded.trade_volume,
-        area_no_59    = excluded.area_no_59,
-        pyeong_no     = excluded.pyeong_no,
-        rank          = excluded.rank,
-        selected_at   = excluded.selected_at
+        complex_name    = excluded.complex_name,
+        district        = excluded.district,
+        household_cnt   = excluded.household_cnt,
+        trade_volume    = excluded.trade_volume,
+        area_no_59      = excluded.area_no_59,
+        pyeong_no       = excluded.pyeong_no,
+        rank            = excluded.rank,
+        selected_at     = excluded.selected_at,
+        richgo_danji_id = excluded.richgo_danji_id
     """
-    payload = [{**r, "selected_at": selected_at} for r in rows]
+    payload = [{
+        **r,
+        "selected_at": selected_at,
+        "richgo_danji_id": r.get("richgo_danji_id"),
+    } for r in rows]
     with transaction() as conn:
         conn.executemany(sql, payload)
 

@@ -92,20 +92,31 @@ def run_collection() -> dict:
 
     logger.info("=== 호가 수집 시작: %s (%d개 단지) ===", ts.isoformat(), len(complexes))
 
-    # 1) 자치구별로 한 번씩만 Richgo 호출
+    # 1) 자치구별로 한 번씩만 Richgo 호출 → {danjiId: row}
     price_map = _fetch_prices_by_district()
     logger.info("Richgo 가격 맵: %d개 danjiId", len(price_map))
 
-    # 2) DB 단지 목록 순회하며 매핑
+    # 2) DB 단지 목록 순회 — richgo_danji_id 로 lookup
     rows: list[dict] = []
     prices_eok: list[float] = []
     by_district_count: dict[str, int] = defaultdict(int)
+    no_mapping = 0
+    no_listing = 0
 
     for cx in complexes:
         cx_no = cx["complex_no"]
-        rg = price_map.get(cx_no)
-        min_price = rg.get("lowestListingPrice") if rg else None
-        article_count = int(rg.get("listingTotalCount") or 0) if rg else 0
+        danji_id = cx.get("richgo_danji_id")
+        if not danji_id:
+            no_mapping += 1
+            min_price, article_count = None, 0
+        else:
+            rg = price_map.get(danji_id)
+            if not rg:
+                no_listing += 1
+                min_price, article_count = None, 0
+            else:
+                min_price = rg.get("lowestListingPrice")
+                article_count = int(rg.get("listingTotalCount") or 0)
         rows.append({
             "collected_at": ts,
             "complex_no": cx_no,
@@ -115,6 +126,8 @@ def run_collection() -> dict:
         if min_price is not None:
             prices_eok.append(api.price_to_eok(min_price))
             by_district_count[cx.get("district", "?")] += 1
+
+    logger.info("매핑 없음: %d, 매핑은 됐지만 현재 매물 없음: %d", no_mapping, no_listing)
 
     saved = insert_hourly_prices(rows)
     try:
