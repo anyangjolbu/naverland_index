@@ -217,6 +217,48 @@ def api_refresh():
     return jsonify({"status": "started", "kind": "full_refresh"})
 
 
+@app.route("/api/debug/connectivity")
+def api_debug_connectivity():
+    """진단: Railway에서 네이버까지 어떻게 막히는지 단계별로 확인."""
+    import socket
+    import urllib.request
+    import urllib.error
+    from config import NAVER_HEADERS
+
+    out: dict = {}
+
+    # 1. DNS 해상
+    try:
+        out["1_dns"] = {"ip": socket.gethostbyname("new.land.naver.com")}
+    except Exception as e:
+        out["1_dns"] = {"error": str(e)}
+
+    def _try(name: str, url: str, headers: dict | None = None):
+        try:
+            req = urllib.request.Request(url, headers=headers or {})
+            with urllib.request.urlopen(req, timeout=10) as r:
+                body = r.read(500).decode("utf-8", errors="replace")
+                out[name] = {"status": r.status, "len_first500": len(body), "head": body[:200]}
+        except urllib.error.HTTPError as e:
+            body = e.read(500).decode("utf-8", errors="replace") if e.fp else ""
+            out[name] = {"status": e.code, "head": body[:200]}
+        except Exception as e:
+            out[name] = {"error": f"{type(e).__name__}: {e}"}
+
+    # 2. 메인 페이지 HTTP (헤더 없음)
+    _try("2_html_naked", "https://new.land.naver.com/complexes")
+    # 3. 메인 페이지 HTTP (브라우저 헤더)
+    _try("3_html_browser", "https://new.land.naver.com/complexes", NAVER_HEADERS)
+    # 4. API 직접 (헤더 없음)
+    _try("4_api_naked", "https://new.land.naver.com/api/regions/list?cortarNo=1168000000")
+    # 5. API 직접 (브라우저 헤더)
+    _try("5_api_browser",
+         "https://new.land.naver.com/api/regions/list?cortarNo=1168000000",
+         NAVER_HEADERS)
+
+    return jsonify(out)
+
+
 @app.route("/api/district/hourly")
 def api_district_hourly():
     """자치구별 시간봉 평균 최저호가.
