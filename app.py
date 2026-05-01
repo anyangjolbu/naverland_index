@@ -269,6 +269,19 @@ def api_debug_connectivity():
     _try("10_via_corsproxy",
          "https://corsproxy.io/?https%3A%2F%2Fnew.land.naver.com%2Fapi%2Fregions%2Flist%3FcortarNo%3D1168000000",
          {"Accept": "application/json"})
+    # 11~ : land.naver.com (구버전) 의 다양한 path 탐색
+    for name, url in [
+        ("11_land_api_regions", "https://land.naver.com/api/regions/list?cortarNo=1168000000"),
+        ("12_land_complex", "https://land.naver.com/article/articleList.naver?rletTpCd=APT&tradTpCd=A1"),
+        ("13_land_complex_search", "https://land.naver.com/complex/cluster"),
+        ("14_fin_land", "https://fin.land.naver.com/"),
+        ("15_realestate", "https://realestate.naver.com/"),
+        # 새 land 시도하지만 Host 헤더만 land.naver.com
+        ("16_land_complexes_path", "https://land.naver.com/complexes/108234"),
+        # 또 다른 Naver 부동산 관련 (네이버 검색)
+        ("17_search_realestate", "https://search.naver.com/search.naver?query=%EC%95%84%ED%8C%8C%ED%8A%B8"),
+    ]:
+        _try(name, url, NAVER_HEADERS)
 
     return jsonify(out)
 
