@@ -217,6 +217,34 @@ def api_refresh():
     return jsonify({"status": "started", "kind": "full_refresh"})
 
 
+@app.route("/api/debug/richgo")
+def api_debug_richgo():
+    """Railway 에서 Richgo opengoods 호출 가능한지 검증."""
+    import urllib.request
+    import urllib.error
+    url = ("https://api-m.richgo.ai/api/data/danji/price/opengoods"
+           "?limit=50&bjdCode=1168000000&tradeType=Meme"
+           "&isOnlyToday=false&isOnlyLeaders=false"
+           "&buildingTypeCode=APT&isExceptLowFloor=false")
+    try:
+        req = urllib.request.Request(url, headers={"Accept": "application/json"})
+        with urllib.request.urlopen(req, timeout=15) as r:
+            data = r.read()
+            import json as _json
+            payload = _json.loads(data)
+            result = payload.get("result", [])
+            twentyfours = [x for x in result if x.get("pyeongType") == 24]
+            return jsonify({
+                "ok": True,
+                "status": r.status,
+                "total_count": len(result),
+                "pyeong24_count": len(twentyfours),
+                "sample": twentyfours[:3],
+            })
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"{type(e).__name__}: {e}"})
+
+
 @app.route("/api/debug/test_token")
 def api_debug_test_token():
     """Bearer 토큰 받아서 다양한 호스트의 /api/regions/list 시도.
