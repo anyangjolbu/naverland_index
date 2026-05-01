@@ -255,6 +255,20 @@ def api_debug_connectivity():
     _try("5_api_browser",
          "https://new.land.naver.com/api/regions/list?cortarNo=1168000000",
          NAVER_HEADERS)
+    # 6. 모바일 land
+    _try("6_m_land", "https://m.land.naver.com/", NAVER_HEADERS)
+    # 7. 일반 land
+    _try("7_land", "https://land.naver.com/", NAVER_HEADERS)
+    # 8. 다른 naver 도메인 (대조군 — 차단 아닌지 확인)
+    _try("8_naver_main", "https://www.naver.com/", NAVER_HEADERS)
+    # 9. 공개 CORS 프록시 통과 (allorigins.win)
+    _try("9_via_allorigins",
+         "https://api.allorigins.win/raw?url=https%3A%2F%2Fnew.land.naver.com%2Fapi%2Fregions%2Flist%3FcortarNo%3D1168000000",
+         {"Accept": "application/json"})
+    # 10. 다른 공개 프록시 (corsproxy.io)
+    _try("10_via_corsproxy",
+         "https://corsproxy.io/?https%3A%2F%2Fnew.land.naver.com%2Fapi%2Fregions%2Flist%3FcortarNo%3D1168000000",
+         {"Accept": "application/json"})
 
     return jsonify(out)
 
