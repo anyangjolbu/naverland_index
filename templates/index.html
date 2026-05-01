@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>서울 아파트 59㎡ Index</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<header>
+  <div id="status-dot" class="status-dot"></div>
+  <h1>서울 아파트 59㎡ 최저호가 Index</h1>
+  <span id="last-update"></span>
+</header>
+
+<div class="controls">
+  <div class="btn-group">
+    <button class="btn btn-mode active" data-mode="hourly"  onclick="setMode('hourly')">시간봉</button>
+    <button class="btn btn-mode"        data-mode="daily"   onclick="setMode('daily')">일봉</button>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-metric active" data-metric="avg"    onclick="setMetric('avg')">평균</button>
+    <button class="btn btn-metric"        data-metric="median" onclick="setMetric('median')">중위</button>
+  </div>
+  <button id="btn-run" class="btn btn-run" onclick="runNow()">지금 수집</button>
+</div>
+
+<div class="chart-section">
+  <div class="chart-header">
+    <div id="price-display" class="price-display">-</div>
+    <div id="price-change"  class="price-change"></div>
+    <span style="color:var(--text-muted);font-size:12px">억원</span>
+  </div>
+  <div id="chart-container"></div>
+</div>
+
+<div class="district-section">
+  <h2>자치구별 평균 최저호가 <span class="subtitle">(최근 7일, 억원)</span></h2>
+  <div id="district-legend" class="district-legend"></div>
+  <div id="district-chart-container"></div>
+</div>
+
+<div class="table-section">
+  <h2>선정 단지 목록 <span id="complex-count" class="subtitle">100개</span></h2>
+  <div id="complex-filter" class="complex-filter"></div>
+  <table class="complex-table">
+    <thead>
+      <tr>
+        <th style="width:48px">순위</th>
+        <th>단지명</th>
+        <th>자치구</th>
+        <th style="width:80px;text-align:right">세대</th>
+        <th style="width:100px;text-align:right">최근 호가</th>
+      </tr>
+    </thead>
+    <tbody id="complex-tbody">
+      <tr><td colspan="5" style="color:var(--text-muted);padding:20px">로딩 중...</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div id="js-error" style="display:none;padding:12px 24px;background:#3d1717;color:#ffb4b4;font-size:13px;border-bottom:1px solid #5a2222"></div>
+<script src="/static/js/lightweight-charts.standalone.production.js"></script>
+<script src="/static/js/chart.js"></script>
+<script>
+  window.addEventListener('error', e => {
+    const box = document.getElementById('js-error');
+    if (!box) return;
+    box.style.display = 'block';
+    box.textContent = `JS 오류: ${e.message} (${e.filename}:${e.lineno})`;
+  });
+</script>
+</body>
+</html>

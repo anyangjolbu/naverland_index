@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# Virtual envs
+venv/
+.venv/
+env/
+
+# Local data — DB + cache + collection dumps (Railway volume holds these in prod)
+data/
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE / OS
+.claude/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Local notes (private)
+genspark*
