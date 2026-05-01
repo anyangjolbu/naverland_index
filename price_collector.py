@@ -1,21 +1,22 @@
-"""시간 단위 최저호가 수집기.
+"""시간 단위 최저호가 수집기 (Richgo 기반).
 
-DB complexes 에 저장된 Top 100 단지를 읽어
-각 단지의 전용 59㎡ 매물 최저호가를 조회하고 hourly_prices 에 적재한다.
-수집 결과는 동시에 CSV 파일 (data/collections/{date}.csv) 에도 append.
-수집 완료 후 index_calculator.update() 를 호출해 hourly_index / OHLC 를 갱신한다.
+DB complexes 에 저장된 단지를 읽어
+sgg(자치구) 단위로 한 번씩만 Richgo opengoods 조회 → 매핑 → DB/CSV 저장.
+
+총 API 호출 = 자치구 수 (보통 8회). 단지별 호출하지 않음.
 """
 
 from __future__ import annotations
 
 import csv
 import logging
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-import naver_api as api
-from config import DATA_DIR
+import richgo_api as api
+from config import DATA_DIR, DISTRICTS, TARGET_PYEONG_TYPE
 from database import get_complexes, insert_hourly_prices
 
 logger = logging.getLogger(__name__)
@@ -26,20 +27,13 @@ CSV_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _floor_to_hour(dt: datetime) -> datetime:
-    """분/초를 0으로 내려 시간 정각으로 정규화. timezone 제거해 naive KST로 저장."""
     return dt.replace(minute=0, second=0, microsecond=0, tzinfo=None)
 
 
 def _save_csv(ts: datetime, rows: list[dict], complexes: list[dict]) -> Path:
-    """수집 결과를 일자별 CSV 파일에 append.
-
-    파일명: data/collections/{YYYY-MM-DD}.csv
-    헤더가 없으면 첫 행에 헤더 추가.
-    """
     cx_by_no = {c["complex_no"]: c for c in complexes}
     csv_path = CSV_DIR / f"{ts.date().isoformat()}.csv"
     is_new = not csv_path.exists()
-
     with open(csv_path, "a", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
         if is_new:
@@ -51,8 +45,10 @@ def _save_csv(ts: datetime, rows: list[dict], complexes: list[dict]) -> Path:
         for r in rows:
             cx = cx_by_no.get(r["complex_no"], {})
             mp = r.get("min_price")
-            ts_str = r["collected_at"].strftime("%Y-%m-%d %H:%M:%S") \
+            ts_str = (
+                r["collected_at"].strftime("%Y-%m-%d %H:%M:%S")
                 if isinstance(r["collected_at"], datetime) else str(r["collected_at"])
+            )
             w.writerow([
                 ts_str,
                 r["complex_no"],
@@ -67,8 +63,25 @@ def _save_csv(ts: datetime, rows: list[dict], complexes: list[dict]) -> Path:
     return csv_path
 
 
+def _fetch_prices_by_district() -> dict[str, dict]:
+    """자치구별로 한 번씩 Richgo 호출 → {danjiId: row} 통합 맵.
+
+    rows 는 Richgo opengoods 원본 dict (lowestListingPrice, listingTotalCount 포함).
+    """
+    aggregate: dict[str, dict] = {}
+    for district_name, sgg_code in DISTRICTS.items():
+        rows = api.list_opengoods_by_sgg(sgg_code)
+        api.pace()
+        matched = [r for r in rows if r.get("pyeongType") == TARGET_PYEONG_TYPE]
+        for r in matched:
+            danji_id = str(r.get("danjiId") or "")
+            if danji_id:
+                aggregate[danji_id] = r
+        logger.info("[%s] %d평 %d건 수집", district_name, TARGET_PYEONG_TYPE, len(matched))
+    return aggregate
+
+
 def run_collection() -> dict:
-    """단지 100개에 대해 59㎡ 최저호가 수집 → DB + CSV 저장."""
     complexes = get_complexes()
     if not complexes:
         logger.warning("complexes 비어있음 — complex_selector 먼저 실행 필요")
@@ -79,58 +92,31 @@ def run_collection() -> dict:
 
     logger.info("=== 호가 수집 시작: %s (%d개 단지) ===", ts.isoformat(), len(complexes))
 
+    # 1) 자치구별로 한 번씩만 Richgo 호출
+    price_map = _fetch_prices_by_district()
+    logger.info("Richgo 가격 맵: %d개 danjiId", len(price_map))
+
+    # 2) DB 단지 목록 순회하며 매핑
     rows: list[dict] = []
     prices_eok: list[float] = []
+    by_district_count: dict[str, int] = defaultdict(int)
 
-    try:
-        api.ensure_auth()
+    for cx in complexes:
+        cx_no = cx["complex_no"]
+        rg = price_map.get(cx_no)
+        min_price = rg.get("lowestListingPrice") if rg else None
+        article_count = int(rg.get("listingTotalCount") or 0) if rg else 0
+        rows.append({
+            "collected_at": ts,
+            "complex_no": cx_no,
+            "min_price": min_price,
+            "article_count": article_count,
+        })
+        if min_price is not None:
+            prices_eok.append(api.price_to_eok(min_price))
+            by_district_count[cx.get("district", "?")] += 1
 
-        for i, cx in enumerate(complexes):
-            cx_no = cx["complex_no"]
-            area_no = cx.get("area_no_59") or ""
-
-            if not area_no:
-                logger.warning("[%d] %s — area_no_59 없음, 건너뜀",
-                               cx.get("rank", 0), cx["complex_name"])
-                rows.append({
-                    "collected_at": ts,
-                    "complex_no": cx_no,
-                    "min_price": None,
-                    "article_count": 0,
-                })
-                continue
-
-            try:
-                min_price, article_count = api.get_min_price(cx_no, area_no)
-            except Exception as e:
-                logger.warning("[%s] get_min_price 오류: %s", cx_no, e)
-                min_price, article_count = None, 0
-
-            rows.append({
-                "collected_at": ts,
-                "complex_no": cx_no,
-                "min_price": min_price,
-                "article_count": article_count,
-            })
-
-            if min_price is not None:
-                prices_eok.append(api.price_to_eok(min_price))
-
-            logger.info(
-                "[%d/%d] %s (%s): %s억 (%d건)",
-                i + 1, len(complexes), cx["complex_name"], cx["district"],
-                f"{api.price_to_eok(min_price):.2f}" if min_price else "N/A",
-                article_count,
-            )
-            api.pace()
-    finally:
-        # 스레드별 브라우저는 다음 사이클을 위해 정리
-        api.close_browser()
-
-    # DB 저장
     saved = insert_hourly_prices(rows)
-
-    # CSV 저장 (DB와 동일 데이터)
     try:
         csv_path = _save_csv(ts, rows, complexes)
         logger.info("CSV 저장: %s", csv_path)
@@ -149,8 +135,7 @@ def run_collection() -> dict:
 
     logger.info(
         "=== 수집 완료: valid=%d, missing=%d, avg=%.2f억, median=%.2f억 ===",
-        valid_count, missing_count,
-        avg_eok or 0, median_eok or 0,
+        valid_count, missing_count, avg_eok or 0, median_eok or 0,
     )
 
     return {
