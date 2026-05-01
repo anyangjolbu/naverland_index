@@ -283,6 +283,32 @@ def api_debug_connectivity():
     ]:
         _try(name, url, NAVER_HEADERS)
 
+    # 18~ : 추가 우회 시도 (모바일 앱 UA, 다양한 Naver 서브도메인)
+    mobile_app_ua = {
+        "User-Agent": "Mozilla/5.0 (Linux; Android 13; SM-G998N) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Version/4.0 Chrome/121.0.0.0 Mobile Safari/537.36 "
+                      "NAVER(inapp; search; 2000; 12.6.0)",
+        "Accept": "application/json, text/plain, */*",
+    }
+    iphone_ua = {
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) "
+                      "AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 NAVER(inapp; search; 2000; 12.6.0)",
+        "Accept": "application/json, text/plain, */*",
+    }
+    for name, url, hdr in [
+        ("18_new_land_naver_app_ua", "https://new.land.naver.com/api/regions/list?cortarNo=1168000000", mobile_app_ua),
+        ("19_new_land_iphone_ua", "https://new.land.naver.com/api/regions/list?cortarNo=1168000000", iphone_ua),
+        ("20_api_land", "https://api.land.naver.com/api/regions/list?cortarNo=1168000000", NAVER_HEADERS),
+        ("21_srest", "https://srest.naver.com/", NAVER_HEADERS),
+        ("22_realestate_search", "https://realestate.search.naver.com/", NAVER_HEADERS),
+        ("23_land_search", "https://land.search.naver.com/", NAVER_HEADERS),
+        ("24_finance_naver", "https://finance.naver.com/", NAVER_HEADERS),
+        ("25_map_naver_complex", "https://map.naver.com/p/api/site/summary/place?type=COMPLEX", NAVER_HEADERS),
+        # 검색 결과 페이지 안에 부동산 카드 — 우리가 거기서 추출 가능?
+        ("26_search_apt_specific", "https://search.naver.com/search.naver?query=%EB%9E%98%EB%AF%B8%EC%95%88%EB%8D%B0%EC%9D%B4%EB%A6%BC%ED%8E%9C%ED%8A%B8%ED%95%98%EC%9A%B0%EC%8A%A4", NAVER_HEADERS),
+    ]:
+        _try(name, url, hdr)
+
     return jsonify(out)
 
 
