@@ -217,6 +217,46 @@ def api_refresh():
     return jsonify({"status": "started", "kind": "full_refresh"})
 
 
+@app.route("/api/debug/test_token")
+def api_debug_test_token():
+    """Bearer 토큰 받아서 다양한 호스트의 /api/regions/list 시도.
+
+    사용법: GET /api/debug/test_token?token=eyJ...
+    """
+    import urllib.request
+    import urllib.error
+    from config import NAVER_HEADERS
+
+    token = request.args.get("token", "").strip()
+    if not token:
+        return jsonify({"error": "missing ?token=..."}), 400
+
+    headers = {**NAVER_HEADERS, "Authorization": f"Bearer {token}"}
+    out: dict = {}
+
+    targets = [
+        ("a_new_land",  "https://new.land.naver.com/api/regions/list?cortarNo=1168000000"),
+        ("b_api_land",  "https://api.land.naver.com/api/regions/list?cortarNo=1168000000"),
+        ("c_m_land",    "https://m.land.naver.com/api/regions/list?cortarNo=1168000000"),
+        ("d_api_land_complex", "https://api.land.naver.com/api/complexes/108234?sameAddressGroup=false"),
+        ("e_api_land_articles", "https://api.land.naver.com/api/articles/complex/108234?realEstateType=APT&tradeType=A1&areaNos=1&page=1&order=prc"),
+    ]
+
+    for name, url in targets:
+        try:
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=15) as r:
+                body = r.read(800).decode("utf-8", errors="replace")
+                out[name] = {"status": r.status, "head": body[:400]}
+        except urllib.error.HTTPError as e:
+            body = e.read(400).decode("utf-8", errors="replace") if e.fp else ""
+            out[name] = {"status": e.code, "head": body[:400]}
+        except Exception as e:
+            out[name] = {"error": f"{type(e).__name__}: {e}"}
+
+    return jsonify(out)
+
+
 @app.route("/api/debug/connectivity")
 def api_debug_connectivity():
     """진단: Railway에서 네이버까지 어떻게 막히는지 단계별로 확인."""
