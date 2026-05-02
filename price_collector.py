@@ -64,20 +64,48 @@ def _save_csv(ts: datetime, rows: list[dict], complexes: list[dict]) -> Path:
 
 
 def _fetch_prices_by_district() -> dict[str, dict]:
-    """자치구별로 한 번씩 Richgo 호출 → {danjiId: row} 통합 맵.
+    """자치구별 snowball 호출 → {danjiId: row} 통합 맵.
 
-    rows 는 Richgo opengoods 원본 dict (lowestListingPrice, listingTotalCount 포함).
+    Richgo opengoods 는 호출당 ~50건으로 캡되므로 sgg + 발견된 emd 들 + leaders 까지
+    모아서 커버리지 최대화.
     """
     aggregate: dict[str, dict] = {}
     for district_name, sgg_code in DISTRICTS.items():
+        # 1) sgg-level
         rows = api.list_opengoods_by_sgg(sgg_code)
         api.pace()
-        matched = [r for r in rows if r.get("pyeongType") == TARGET_PYEONG_TYPE]
-        for r in matched:
+        emd_codes: set[str] = set()
+        for r in rows:
+            emd = r.get("danjiBjdCode")
+            if emd and emd != sgg_code:
+                emd_codes.add(emd)
+
+        # 2) emd-level (snowball)
+        for emd in emd_codes:
+            rows.extend(api.list_opengoods_by_sgg(emd))
+            api.pace()
+
+        # 3) leaders only (다른 set 일 가능성)
+        rows.extend(api.list_opengoods_by_sgg(sgg_code, only_leaders=True))
+        api.pace()
+
+        # pyeongType=24 만 필터 + 최저 가격 우선 (한 danji 가 여러 row 면 최저가 유지)
+        n_district = 0
+        for r in rows:
+            if r.get("pyeongType") != TARGET_PYEONG_TYPE:
+                continue
             danji_id = str(r.get("danjiId") or "")
-            if danji_id:
+            if not danji_id:
+                continue
+            existing = aggregate.get(danji_id)
+            if (existing is None
+                    or (r.get("lowestListingPrice") or 10**12)
+                    < (existing.get("lowestListingPrice") or 10**12)):
                 aggregate[danji_id] = r
-        logger.info("[%s] %d평 %d건 수집", district_name, TARGET_PYEONG_TYPE, len(matched))
+                if existing is None:
+                    n_district += 1
+        logger.info("[%s] %d평 %d개 단지 수집 (총 누적 %d)",
+                    district_name, TARGET_PYEONG_TYPE, n_district, len(aggregate))
     return aggregate
 
 
