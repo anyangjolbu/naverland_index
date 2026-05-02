@@ -563,6 +563,12 @@
       "richgo_name": "대치삼성1차",
       "match_type": "exact",
       "score": 1.0
+    },
+    "103577": {
+      "danjiId": "a9oPlDk",
+      "richgo_name": "서초힐스",
+      "match_type": "manual",
+      "score": 1.0
     }
   },
   "unmatched": [
@@ -595,12 +601,6 @@
       "complex_name": "래미안원페를라",
       "district": "서초구",
       "rank": 83
-    },
-    {
-      "complex_no": "103577",
-      "complex_name": "서초힐스",
-      "district": "서초구",
-      "rank": 84
     }
   ]
 }
