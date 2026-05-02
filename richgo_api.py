@@ -26,7 +26,7 @@ DEFAULT_HEADERS = {
     ),
 }
 
-REQUEST_DELAY_SEC = 0.5
+REQUEST_DELAY_SEC = 0.2
 TIMEOUT_SEC = 15
 MAX_RETRIES = 3
 BACKOFF_BASE_SEC = 2
@@ -109,9 +109,72 @@ def list_opengoods_by_sgg(
 
 
 def get_danji_onepage(danji_id: str) -> dict | None:
-    """단일 단지 종합 정보 (현재 minOfferPrice, totalPostCount 등)."""
+    """단일 단지 종합 정보 (pyeongList, pyeongInfos 등 포함)."""
     result = _get("/api/data/danji/onepage", {"danjiId": danji_id})
     return result if isinstance(result, dict) else None
+
+
+# 24평 (= 59㎡ 전용) 우선, 없으면 가까운 평형 fallback
+_PYEONG_FALLBACK_ORDER = [24, 25, 23, 26, 22, 27, 21]
+
+
+def get_pyeong24_price(danji_id: str) -> tuple[int | None, str | None, int]:
+    """단지의 24평(=59㎡) 가격 + 매물 수.
+
+    Returns:
+        (price_in_manwon, source, open_goods_count_for_pyeong)
+        source ∈ {'OFFER', 'RICHGO_SISE', 'KB', None}
+        OFFER = 현재 최저 호가 (있을 때)
+        RICHGO_SISE = Richgo 산출 시세 (호가 없을 때 fallback)
+        KB = KB 시세 (마지막 fallback)
+    """
+    data = get_danji_onepage(danji_id)
+    if not data:
+        return None, None, 0
+
+    pyeong_infos = data.get("pyeongInfos") or {}
+    selected = None
+    for pt in _PYEONG_FALLBACK_ORDER:
+        # API 키는 string ("24") 인 경우가 많음, int 도 방어
+        info = pyeong_infos.get(str(pt)) or pyeong_infos.get(pt)
+        if info:
+            selected = info
+            break
+    if not selected:
+        return None, None, 0
+
+    price_info = selected.get("danjiPriceInfo") or {}
+    meme = price_info.get("memePriceDict") or {}
+
+    # 1순위 — 현재 매물 호가 (최저)
+    offer = meme.get("OFFER") or {}
+    offer_price = offer.get("minPrice") or offer.get("price")
+    open_count = int(data.get("openGoodsCount") or 0)
+    if offer_price:
+        try:
+            return int(offer_price), "OFFER", open_count
+        except (TypeError, ValueError):
+            pass
+
+    # 2순위 — Richgo 시세
+    sise = meme.get("RICHGO_SISE") or {}
+    sise_price = sise.get("price")
+    if sise_price:
+        try:
+            return int(sise_price), "RICHGO_SISE", 0
+        except (TypeError, ValueError):
+            pass
+
+    # 3순위 — KB 시세
+    kb = meme.get("KB") or {}
+    kb_price = kb.get("price")
+    if kb_price:
+        try:
+            return int(kb_price), "KB", 0
+        except (TypeError, ValueError):
+            pass
+
+    return None, None, 0
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────

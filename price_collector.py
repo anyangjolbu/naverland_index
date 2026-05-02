@@ -63,50 +63,22 @@ def _save_csv(ts: datetime, rows: list[dict], complexes: list[dict]) -> Path:
     return csv_path
 
 
-def _fetch_prices_by_district() -> dict[str, dict]:
-    """자치구별 snowball 호출 → {danjiId: row} 통합 맵.
+def _fetch_price_per_danji(danji_ids: list[str]) -> dict[str, tuple[int | None, str | None, int]]:
+    """매핑된 단지 각각에 대해 onepage 호출 → 24평 가격 + source + 매물수.
 
-    Richgo opengoods 는 호출당 ~50건으로 캡되므로 sgg + 발견된 emd 들 + leaders 까지
-    모아서 커버리지 최대화.
+    Returns: {danji_id: (price_manwon, source, open_goods_count)}
     """
-    aggregate: dict[str, dict] = {}
-    for district_name, sgg_code in DISTRICTS.items():
-        # 1) sgg-level
-        rows = api.list_opengoods_by_sgg(sgg_code)
+    out: dict[str, tuple[int | None, str | None, int]] = {}
+    by_source: dict[str, int] = {"OFFER": 0, "RICHGO_SISE": 0, "KB": 0, "NONE": 0}
+    for did in danji_ids:
+        price, source, n = api.get_pyeong24_price(did)
+        out[did] = (price, source, n)
+        by_source[source or "NONE"] += 1
         api.pace()
-        emd_codes: set[str] = set()
-        for r in rows:
-            emd = r.get("danjiBjdCode")
-            if emd and emd != sgg_code:
-                emd_codes.add(emd)
-
-        # 2) emd-level (snowball)
-        for emd in emd_codes:
-            rows.extend(api.list_opengoods_by_sgg(emd))
-            api.pace()
-
-        # 3) leaders only (다른 set 일 가능성)
-        rows.extend(api.list_opengoods_by_sgg(sgg_code, only_leaders=True))
-        api.pace()
-
-        # pyeongType=24 만 필터 + 최저 가격 우선 (한 danji 가 여러 row 면 최저가 유지)
-        n_district = 0
-        for r in rows:
-            if r.get("pyeongType") != TARGET_PYEONG_TYPE:
-                continue
-            danji_id = str(r.get("danjiId") or "")
-            if not danji_id:
-                continue
-            existing = aggregate.get(danji_id)
-            if (existing is None
-                    or (r.get("lowestListingPrice") or 10**12)
-                    < (existing.get("lowestListingPrice") or 10**12)):
-                aggregate[danji_id] = r
-                if existing is None:
-                    n_district += 1
-        logger.info("[%s] %d평 %d개 단지 수집 (총 누적 %d)",
-                    district_name, TARGET_PYEONG_TYPE, n_district, len(aggregate))
-    return aggregate
+    logger.info("danji 가격 수집: OFFER=%d, RICHGO_SISE=%d, KB=%d, NONE=%d",
+                by_source["OFFER"], by_source["RICHGO_SISE"],
+                by_source["KB"], by_source["NONE"])
+    return out
 
 
 def run_collection() -> dict:
@@ -120,31 +92,28 @@ def run_collection() -> dict:
 
     logger.info("=== 호가 수집 시작: %s (%d개 단지) ===", ts.isoformat(), len(complexes))
 
-    # 1) 자치구별로 한 번씩만 Richgo 호출 → {danjiId: row}
-    price_map = _fetch_prices_by_district()
-    logger.info("Richgo 가격 맵: %d개 danjiId", len(price_map))
+    # 매핑된 danji_id 만 추출
+    mapped_ids = [c["richgo_danji_id"] for c in complexes if c.get("richgo_danji_id")]
+    no_mapping = len(complexes) - len(mapped_ids)
+    logger.info("매핑됨 %d, 매핑 없음 %d", len(mapped_ids), no_mapping)
 
-    # 2) DB 단지 목록 순회 — richgo_danji_id 로 lookup
+    # 각 단지에 대해 onepage 호출
+    price_map = _fetch_price_per_danji(mapped_ids)
+
     rows: list[dict] = []
     prices_eok: list[float] = []
     by_district_count: dict[str, int] = defaultdict(int)
-    no_mapping = 0
-    no_listing = 0
+    no_price = 0
 
     for cx in complexes:
         cx_no = cx["complex_no"]
         danji_id = cx.get("richgo_danji_id")
         if not danji_id:
-            no_mapping += 1
             min_price, article_count = None, 0
         else:
-            rg = price_map.get(danji_id)
-            if not rg:
-                no_listing += 1
-                min_price, article_count = None, 0
-            else:
-                min_price = rg.get("lowestListingPrice")
-                article_count = int(rg.get("listingTotalCount") or 0)
+            price, _source, count = price_map.get(danji_id, (None, None, 0))
+            min_price = price
+            article_count = count
         rows.append({
             "collected_at": ts,
             "complex_no": cx_no,
@@ -154,8 +123,11 @@ def run_collection() -> dict:
         if min_price is not None:
             prices_eok.append(api.price_to_eok(min_price))
             by_district_count[cx.get("district", "?")] += 1
+        else:
+            no_price += 1
 
-    logger.info("매핑 없음: %d, 매핑은 됐지만 현재 매물 없음: %d", no_mapping, no_listing)
+    logger.info("최종: 가격있음 %d, 가격없음 %d (매핑X %d)",
+                len(prices_eok), no_price, no_mapping)
 
     saved = insert_hourly_prices(rows)
     try:
