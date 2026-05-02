@@ -70,21 +70,21 @@ def run_selection(save_to_db: bool = True) -> list[dict]:
         now = datetime.now(tz=KST)
         # 이전 스키마/identity 잔재 정리: complex_no 가 digits 가 아닌 행 제거.
         # (이전 시도는 Richgo 의 danjiId 를 complex_no 로 썼었음 — "a"로 시작.)
+        # FK 때문에 child(hourly_prices) 먼저 지운 후 parent(complexes) 삭제.
         with transaction() as conn:
-            cur = conn.execute(
+            n_legacy_prices = conn.execute(
+                "DELETE FROM hourly_prices WHERE complex_no NOT GLOB '[0-9]*'"
+            ).rowcount
+            n_legacy_complexes = conn.execute(
                 "DELETE FROM complexes WHERE complex_no NOT GLOB '[0-9]*'"
-            )
-            n_legacy = cur.rowcount
-            if n_legacy:
-                logger.info("legacy(non-digit complex_no) 제거: %d행", n_legacy)
-                # 해당 hourly_prices 도 cascade 정리
-                conn.execute(
-                    "DELETE FROM hourly_prices WHERE complex_no NOT GLOB '[0-9]*'"
-                )
-                # 잘못된 시각의 집계도 폐기 (모든 시각 다 wipe — 새로 채워질 것)
+            ).rowcount
+            if n_legacy_complexes:
+                # 잘못된 시각의 집계도 폐기 — 새로 채워질 것
                 conn.execute("DELETE FROM hourly_index")
                 conn.execute("DELETE FROM hourly_ohlc")
                 conn.execute("DELETE FROM daily_ohlc")
+                logger.info("legacy 정리: complexes %d행, hourly_prices %d행, 집계 wipe",
+                            n_legacy_complexes, n_legacy_prices)
         upsert_complexes(rows, selected_at=now)
         logger.info("DB upsert 완료 (%d/%d 매핑됨)", mapped_n, len(rows))
 
