@@ -1,68 +1,56 @@
 # Roadmap
 
-각 Phase 종료 시 [HISTORY.md](HISTORY.md) 에 기록.
+대부분의 Phase 0~6 항목은 완료 (자세한 변경사: [HISTORY.md](HISTORY.md)).
+이 문서는 **현재 미해결 / 향후 개선 아이디어** 만 유지.
 
-## Phase 0 — 사전 조사 ✅ (genspark 세션에서 완료)
-- [x] Naver Land API 엔드포인트 확인 (regions / complexes / articles)
-- [x] 자치구 cortarNo 매핑
-- [x] 가격 파싱 로직 ("18억 5,000" → 185000 만원) 검증
-- [x] Sandbox IP 429 차단 이슈 인지 → Render/로컬 IP에서 재시도 필요
+## 미해결
 
-## Phase 1 — 기반 코드 (현재 진행 중)
-- [x] README / ARCHITECTURE / ROADMAP / HISTORY 셋업
-- [ ] `requirements.txt`
-- [ ] `config.py` (cortarNo, 헤더, 수집 주기 등)
-- [ ] `database.py` (스키마 + 기본 CRUD)
-- [ ] `naver_api.py` (HTTP 클라이언트 + 가격 파서 + 429 backoff)
+### 1. 미매핑 6단지 수동 매핑
+Richgo opengoods 풀에 안 잡혀 자동 매핑 실패한 단지들. 현재 가격 수집 안됨.
 
-## Phase 2 — 단지 선정기
-- [ ] `complexes_data.py` — 시드 Top 100 (수동 조사 결과 하드코딩, 부트 시 1회 적재)
-- [ ] `complex_selector.py` — 매시간 재확인:
-  - 8개 구 → 동 → 단지 트래버스
-  - 1000세대↑ + 59㎡ 보유 필터
-  - 거래량 정렬 (소스 미해결 시 세대수 fallback)
-- [ ] 거래량 데이터 소스 결정:
-  - MOLIT 실거래가 API 시도 (API 키 필요)
-  - 또는 Naver 단지 상세의 거래내역 필드 활용
-- [ ] 100개 단지 검증 (육안: 헬리오시티/잠실엘스/반포자이 등 핵심 단지 포함되는지)
+| rank | 자치구 | complex_no | 단지명 |
+|---|---|---|---|
+| 17 | 강남구 | 11698 | 도곡렉슬 |
+| 57 | 강남구 | 105735 | 강남자곡힐스테이트 |
+| 60 | 강남구 | 107458 | 강남한양수자인 |
+| 64 | 서초구 | 107901 | 서초더샵포레 |
+| 83 | 서초구 | 178737 | 래미안원페를라 |
+| 84 | 서초구 | 103577 | 서초힐스 |
 
-## Phase 3 — 호가 수집기
-- [ ] `price_collector.py` — 단지별 59㎡ 매물 최저호가 추출
-- [ ] 단지간 1~2초 sleep / 429 retry
-- [ ] DB `hourly_prices` 적재 (UNIQUE 제약으로 중복 방지)
-- [ ] 1회 수동 실행 → 100개 단지 모두 결측 사유 명확화
+**작업**: 각 단지명을 https://m.richgo.ai/pc 에서 검색 → URL `realty/danji/[id]` 의 id 복사 → `richgo_mapping.json` 의 `mapping` 객체에 항목 추가:
+```json
+"11698": { "danjiId": "...", "richgo_name": "도곡렉슬", "match_type": "manual", "score": 1.0 }
+```
+commit & push 하면 다음 부트스트랩에서 자동 반영.
 
-## Phase 4 — 인덱스 / OHLC 산출
-- [ ] `index_calculator.py`
-  - `hourly_index` 갱신 (avg/median, 결측 단지 제외)
-  - `hourly_ohlc` 갱신 (이전 close → 현재 close, IQR spread)
-  - `daily_ohlc` 갱신 (KST 00:00 기준)
+### 2. canonical 100 단지 갱신 메커니즘
+현재 `complexes.json` 은 2026-04 시점 Naver 크롤링 결과로 고정.
+신축 입주 / 재건축 / 세대수 변경 등을 반영하려면:
 
-## Phase 5 — Flask + 스케줄러 + 프론트
-- [ ] `app.py` Flask + APScheduler
-- [ ] `templates/index.html` + `static/css/style.css` + `static/js/chart.js`
-- [ ] Lightweight Charts 봉차트 (시간봉 / 일봉, 평균 / 중위 토글)
-- [ ] 단지 리스트 패널
+- **현실적 옵션**: 사용자 집 PC 에서 주기적으로 (분기 1회 정도) 옛 Naver 크롤링 코드 실행 → 갱신된 complexes.json 을 repo 에 push → build_mapping.py 재실행
+- **이상적 옵션**: 자체 Naver 크롤러를 집 PC + Cloudflare Tunnel 로 외부 접속 가능하게 두고, Railway 가 호출. 셋업 부담 큼.
 
-## Phase 6 — Render 무료 배포
-- [ ] `Procfile` / `render.yaml`
-- [ ] `PORT` 환경변수 처리
-- [ ] 배포 후 실제 Naver API 호출 가능 여부 검증
-  - 가능 → 시간 단위 자동 수집 시작
-  - 차단 → Playwright fallback 또는 외부 프록시 검토
-- [ ] DB 영속화 (Render free tier 디스크 휘발성 → 외부 백업)
-- [ ] 슬립 방지 (UptimeRobot 등)
+지금은 미해결 — 단지 풀이 1년 정도는 거의 안 변하므로 우선순위 낮음.
 
-## Phase 7 — 안정화 / 확장 (선택)
-- [ ] Playwright 기반 백업 수집기
-- [ ] 단지/면적/자치구 확장 (84㎡, 114㎡ 등)
-- [ ] 이상치 탐지 (스팸 매물 제거)
-- [ ] 알림 (가격 급변 시 텔레그램/이메일)
+## 향후 아이디어
 
----
+### 데이터 보강
+- [ ] 84㎡, 114㎡ 같은 다른 평형 인덱스 추가 (테이블 + 차트 분리)
+- [ ] 자치구 추가 (현재 8개 → 25개 서울 전체)
+- [ ] 전세 인덱스 추가 (`tradeType=Jeonse`)
+- [ ] 실거래가 (MOLIT) vs 호가 spread 시각화
 
-## 우선순위 이슈
+### 알림 / 분석
+- [ ] 가격 급변 (주간 ±N%) 시 텔레그램 / 이메일
+- [ ] 평소 대비 매물 급증 / 급감 알림
+- [ ] 자치구별 상관관계 / 베타 분석
 
-1. **거래량 데이터 소스** — Phase 2 진입 직전 결정 필요. MOLIT 시도 우선.
-2. **단지 갱신 1시간 주기** — 사용자 명시. 호출 비용이 크므로 (8개구 × 동 × 단지 ≈ 수백 콜) 캐싱 + 변동분만 갱신하는 식으로 최적화.
-3. **Render free tier SQLite 휘발성** — 장기 운영의 핵심 리스크. Phase 6 진입 전 백업 전략 결정.
+### 운영
+- [ ] DB 백업 자동화 (Railway Volume → S3/GCS 주간)
+- [ ] Grafana / Sentry 같은 외부 모니터링
+- [ ] Richgo API 변경 감지 (응답 스키마 schema validation)
+
+### 코드 개선
+- [ ] gunicorn 으로 전환 (APScheduler 를 모듈 스코프로 옮긴 후 worker 1개로)
+- [ ] hourly job 의 lock 보다 큐 기반 (작업 적체 시 무시 대신 deferred 실행)
+- [ ] 가격 source ('OFFER' vs 'SISE') 를 hourly_prices 에 컬럼 추가 → 차트에서 구분 표시

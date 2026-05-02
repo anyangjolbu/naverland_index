@@ -3,187 +3,190 @@
 ## 1. 데이터 흐름
 
 ```
-[자치구 cortarNo] ─┐
-                   │ (시드)
-                   ▼
-            ┌──────────────┐
-            │ complex_     │  매시간 재확인:
-            │ selector     │  · 1000세대 이상 + 59㎡ 보유 필터
-            └──────┬───────┘  · 거래량 순 Top 100 재랭킹
-                   │
-                   ▼
-            ┌──────────────┐
-            │ complexes    │ ← Naver: /api/regions/list
-            │ (DB)         │ ← Naver: /api/regions/complexes
-            └──────┬───────┘ ← Naver: /api/complexes/{id}
-                   │           ← MOLIT 실거래가 (거래량)
-                   ▼
-            ┌──────────────┐
-            │ price_       │
-            │ collector    │  매시간 정각:
-            └──────┬───────┘  · 단지 100개 × 59㎡ 매물 조회
-                   │           · 단지별 최저호가 추출
-                   ▼
-            ┌──────────────┐
-            │ hourly_      │ ← Naver: /api/articles/complex/{id}
-            │ prices (DB)  │
-            └──────┬───────┘
-                   │
-                   ▼
-            ┌──────────────┐
-            │ index_       │  매시간 (수집 직후):
-            │ calculator   │  · avg/median 산출 (억 단위)
-            └──────┬───────┘  · 일봉 OHLC 갱신 (KST 00:00 기준)
-                   │
-                   ▼
-       ┌───────────┴───────────┐
-       ▼                       ▼
-┌──────────────┐       ┌──────────────┐
-│ hourly_index │       │ daily_ohlc   │
-│ (DB)         │       │ (DB)         │
-└──────┬───────┘       └──────┬───────┘
-       │                       │
-       └───────────┬───────────┘
-                   ▼
-            ┌──────────────┐
-            │ Flask app +  │  /api/hourly  → 시간봉
-            │ Lightweight  │  /api/daily   → 일봉
-            │ Charts       │  /api/complexes
-            └──────────────┘
+[정적 자산 — repo 에 commit 됨]
+  complexes.json          ← 과거 Naver 크롤링으로 만든 Top 100 단지 (세대수, rank 등)
+  richgo_mapping.json     ← Naver complex_no → Richgo danjiId 매핑 (94/100)
+        │
+        │ 부트스트랩 (앱 시작 시 + /api/refresh + 매일 03:30)
+        ▼
+  ┌─────────────────────┐
+  │  complex_selector   │  · complexes.json + mapping 로드
+  │  (정적 bootstrap)   │  · DB complexes 테이블 upsert
+  │                     │  · legacy 잔재(non-digit complex_no) 정리
+  └──────────┬──────────┘
+             │
+             ▼
+  ┌─────────────────────┐
+  │  complexes (DB)     │  · 100개 row, 영구
+  │  · complex_no       │
+  │  · richgo_danji_id  │  ← lookup 키
+  │  · household_cnt    │  ← 불변
+  │  · rank             │  ← 불변
+  └──────────┬──────────┘
+             │
+             ▼
+  ┌─────────────────────┐  매시간 02분 (KST):
+  │  price_collector    │  for each mapped danji:
+  │                     │    GET /api/data/danji/onepage?danjiId=...
+  └──────────┬──────────┘    parse pyeongInfos[24].danjiPriceInfo
+             │                price = OFFER → RICHGO_SISE → KB
+             ▼
+  ┌─────────────────────┐
+  │  hourly_prices (DB) │  단지별 시간 단위 가격 (만원)
+  └──────────┬──────────┘
+             │
+             ▼
+  ┌─────────────────────┐
+  │  index_calculator   │  · avg/median (억)
+  │                     │  · 시간봉 OHLC (전 시간 close → 현 시간 close, IQR spread)
+  │                     │  · 일봉 OHLC (KST 00:00 기준)
+  └──────────┬──────────┘
+             │
+             ▼
+  ┌─────────────────────┐    ┌──────────────────┐
+  │  hourly_ohlc (DB)   │    │  daily_ohlc (DB) │
+  └──────────┬──────────┘    └─────────┬────────┘
+             │                          │
+             └────────────┬─────────────┘
+                          ▼
+                ┌──────────────────────┐
+                │  Flask app           │
+                │  + Lightweight Charts│
+                └──────────────────────┘
 ```
 
 ## 2. 모듈
 
-### 2.1 `naver_api.py`
-- 베이스 URL: `https://new.land.naver.com`
-- 엔드포인트:
-  - `GET /api/regions/list?cortarNo={code}` — 시/도 → 구 → 동 계층 코드
-  - `GET /api/regions/complexes?cortarNo={dongCode}&realEstateType=APT` — 동 단위 단지 목록
-  - `GET /api/complexes/{complexNo}?sameAddressGroup=false` — 단지 상세 (totalHouseHoldCount, complexPyeongDetailList)
-  - `GET /api/articles/complex/{complexNo}?realEstateType=APT&tradeType=A1&areaNos={areaNo}&page={n}` — 매매 매물 리스트
-- 헤더:
-  - `User-Agent: Mozilla/5.0 ...` (실제 브라우저 UA)
-  - `Referer: https://new.land.naver.com/complexes`
-  - `Authorization: Bearer <JWT>` — 토큰은 페이지 내 `REALESTATE` payload, 주기 갱신
-- Rate limit: 단지당 1~2초 sleep, 429 응답 시 exponential backoff
-- 가격 파싱: `"18억 5,000"` → `185000` (만원)
-- IP 차단 우회 fallback: Playwright 브라우저로 페이지 내 API 인터셉트 (Phase 2 이후)
+### 2.1 `richgo_api.py` (← naver_api.py 대체)
 
-### 2.2 `complex_selector.py`
-1. 8개 자치구 cortarNo로 동 목록 조회
-2. 각 동의 단지 목록 → `세대수 ≥ 1000` 필터
-3. 단지 상세에서 `complexPyeongDetailList`에 `exclusiveArea ≈ 59m²` 존재 여부 확인 (areaNo 기록)
-4. **거래량 순** 정렬 → Top 100 (거래량 데이터 미확보 시 세대수로 대체 + 로그 경고)
-5. 매시간 재실행 — 신규 단지 편입/이탈을 자동 반영
-6. 변경 시 `complexes` 테이블 upsert + `selected_at` 갱신
+Base URL: `https://api-m.richgo.ai`. 인증 없음, requests 기반 단순 GET.
 
-> **거래량 데이터 소스 (TBD)**:
-> - 1순위: MOLIT 실거래가 공개시스템 API (`apis.data.go.kr/1613000/RTMSDataSvcAptTrade`) — 월 단위 거래 건수 집계
-> - 2순위: Naver 단지 상세의 `realPriceTradeList` 등 내부 필드
-> - 미해결 시: 세대수 fallback + 매뉴얼 시드(`complexes_data.py`)
+| Endpoint | 용도 |
+|---|---|
+| `GET /api/data/danji/onepage?danjiId=X` | 단지 종합 정보 + pyeongInfos (가격 소스 다중) |
+| `GET /api/data/danji/price/opengoods?bjdCode=X&tradeType=Meme&...` | 행정구역별 매물 리스트 (snowball 매핑 빌드 시 사용) |
+
+핵심 함수:
+
+- `get_pyeong24_price(danji_id) → (price_manwon, source, count)`
+  - pyeongInfos 의 24평 (없으면 25, 23, 26, 22, 27, 21 순으로 fallback) 선택
+  - `memePriceDict.OFFER.minPrice` → `RICHGO_SISE.price` → `KB.price` 우선순위
+  - source ∈ {'OFFER', 'RICHGO_SISE', 'KB', None}
+
+- `list_opengoods_by_sgg(bjd_code)` — opengoods 호출 (build_mapping.py 와 정적 fallback 용)
+
+Pacing: 0.2초 / 호출. 100 단지 = ~20초.
+
+### 2.2 `complex_selector.py` — 정적 부트스트랩
+
+이전엔 라이브 크롤링이었지만 Naver 차단으로 불가 → **canonical JSON 두 파일을 DB 에 박는 작업**으로 변경.
+
+1. `complexes.json` 로드 (100 단지: complex_no, name, district, household_cnt, rank, area_no_59, pyeong_no)
+2. `richgo_mapping.json` 로드 (mapping: complex_no → {danjiId, richgo_name, match_type, score})
+3. 두 데이터 join → DB `complexes` upsert (94개는 richgo_danji_id 채워짐, 6개는 NULL)
+4. legacy 정리: 이전에 Richgo danjiId 를 complex_no 로 직접 박았던 잔재 (non-digit complex_no) 와 그 hourly_prices 정리
+
+매번 같은 100개를 upsert → 멱등.
 
 ### 2.3 `price_collector.py`
-- 입력: DB의 100개 단지 + 각 단지 59㎡ areaNos
-- 매시간 정각 (KST) 단지별 매물 조회 → 최저호가 추출
-- 매물 0건 단지는 NULL min_price로 기록 (집계 단계에서 제외됨)
-- 호출 간격: 단지당 1~2초
+
+매시간 호출되는 핵심 루프:
+
+1. `get_complexes()` → DB 100 단지
+2. `richgo_danji_id` 추출 → 94개
+3. 각 danji 에 대해 `richgo_api.get_pyeong24_price(danji_id)` 호출
+4. `(complex_no, collected_at, min_price, article_count)` 행 생성 → `insert_hourly_prices`
+5. CSV 백업 (`data/collections/{date}.csv`) 도 동시 append
+
+매핑 안 된 6개 단지는 가격 NULL 로 저장 (집계에서 자동 제외).
 
 ### 2.4 `index_calculator.py`
-- 시간 단위:
-  - `Avg(t) = mean(P_i)` (NULL 단지 제외)
-  - `Med(t) = median(P_i)` (NULL 단지 제외)
-  - 단위: 억 (= 만원 / 10000)
-- **시간봉 OHLC** (1H):
-  - Open  = 직전 시간의 close (없으면 현재값)
-  - Close = 현재 시간의 평균 (또는 중위값)
-  - High  = max(Open, Close, 현재 단지가격 75th percentile)
-  - Low   = min(Open, Close, 현재 단지가격 25th percentile)
-  - 1시간에 1회만 수집되므로 단지간 가격 분포(IQR)를 high/low spread로 활용
-- **일봉 OHLC** (KST 00:00 기준):
-  - 그 날의 시간봉들을 모아: O=첫 시간봉의 open, H=max(high), L=min(low), C=마지막 시간봉의 close
-  - 평균/중위 각각 계산
 
-### 2.5 `app.py`
-- Flask + APScheduler:
-  - 매시간 정각: `complex_selector.refresh()` → `price_collector.run()` → `index_calculator.update()`
-- 엔드포인트:
-  - `GET /` → 대시보드
-  - `GET /api/hourly?limit=720` → 시간봉 OHLC JSON
-  - `GET /api/daily?limit=365` → 일봉 OHLC JSON
-  - `GET /api/complexes` → 단지 목록 + 최신 호가
-  - `GET /api/status` → 스케줄러/수집 상태
+수정 없음 (Richgo 도입과 무관).
 
-### 2.6 Frontend
-- TradingView Lightweight Charts (캔들스틱)
-- 탭: [시간봉] [일봉]
-- 토글: [평균 ◉ / 중위 ○]
-- 단지 리스트 테이블 (정렬 가능)
+- `update(ts)` — 해당 시각의 hourly_prices 모아서:
+  - `hourly_index` 갱신 (avg, median, valid_count)
+  - `hourly_ohlc` 갱신 (전 시간 close → 현재 close, IQR-based spread)
+  - 영향 받는 날의 `daily_ohlc` 재계산 (해당 일의 시간봉들 모아서 OHLC 산출)
 
-## 3. DB 스키마 (SQLite, `data/index.db`)
+### 2.5 `database.py`
+
+SQLite WAL 모드. 스키마는 거의 그대로지만 `complexes` 테이블에 `richgo_danji_id TEXT` 컬럼 추가. 기존 DB 에는 `init_db()` 의 `PRAGMA table_info` 검사 후 `ALTER TABLE ADD COLUMN` 마이그레이션.
+
+### 2.6 `app.py` — Flask + APScheduler
+
+| 작업 | Cron | 트리거 함수 |
+|---|---|---|
+| 가격 수집 | 매시간 02분 KST | `_run_price_only` → `price_collector.run_collection` |
+| 부트스트랩 + 가격 | 매일 03:30 KST | `_run_full_refresh` → `complex_selector.refresh` + `price_collector.run_collection` |
+
+`_acquire_run / _release_run` 으로 `is_running` 락 관리 (concurrent 방지).
+스케줄러는 `if __name__ == "__main__"` 안에서 시작 → **gunicorn 으로 띄우면 안 됨**, `python app.py` 로 실행.
+
+### 2.7 `build_mapping.py` (1회성 도구)
+
+로컬에서 실행하는 매핑 빌더:
+
+1. 8개 자치구 sgg-level Richgo opengoods 호출 → 50건씩 받음
+2. 응답에서 emd 코드 추출 → emd-level 호출로 풀 확장 (snowball)
+3. `isOnlyLeaders=true` 추가 호출
+4. 자치구당 100~200 unique danji 풀 형성 (총 1042개)
+5. complexes.json 의 100개 와 fuzzy 매칭:
+   - 정규화 후 정확 일치
+   - 양방향 substring
+   - 자카드 유사도 ≥ 0.5
+6. 결과 → `richgo_mapping.json` 저장 (현재 94/100)
+
+매핑은 정적이므로 commit 후 재실행 불필요 (단지가 새로 추가되거나 Naver 데이터 갱신 시에만).
+
+## 3. DB 스키마 (SQLite)
 
 ```sql
--- 선정된 단지 마스터 (매시간 upsert)
 CREATE TABLE complexes (
-  complex_no       TEXT PRIMARY KEY,
+  complex_no       TEXT PRIMARY KEY,        -- Naver complex_no (canonical)
   complex_name     TEXT NOT NULL,
   district         TEXT NOT NULL,
-  household_cnt    INTEGER NOT NULL,
-  trade_volume     INTEGER,           -- 최근 N개월 누적 거래 건수 (랭킹 기준)
-  area_no_59       TEXT,              -- 59㎡ 평형의 areaNos 파라미터값
-  pyeong_no        TEXT,
-  rank             INTEGER,           -- 1..100, 거래량 정렬 순위
-  selected_at      TIMESTAMP NOT NULL
+  household_cnt    INTEGER NOT NULL,        -- 불변, Naver 에서 수집
+  trade_volume     INTEGER,                  -- 사용 안 함 (Naver 시절 잔재)
+  area_no_59       TEXT,                     -- Naver pyeong code (legacy)
+  pyeong_no        TEXT,                     -- Naver pyeong code (legacy)
+  rank             INTEGER,                  -- 1..100
+  selected_at      TIMESTAMP NOT NULL,
+  richgo_danji_id  TEXT                     -- Richgo danjiId (NULL = 미매핑 6단지)
 );
 
--- 단지별 시간 단위 최저호가 (raw)
 CREATE TABLE hourly_prices (
   id               INTEGER PRIMARY KEY AUTOINCREMENT,
-  collected_at     TIMESTAMP NOT NULL,    -- KST, 시간 정각 정규화
+  collected_at     TIMESTAMP NOT NULL,
   complex_no       TEXT NOT NULL,
-  min_price        INTEGER,                -- 만원, NULL = 매물 없음(결측)
-  article_count    INTEGER DEFAULT 0,
+  min_price        INTEGER,                  -- 만원, NULL = 가격 없음
+  article_count    INTEGER DEFAULT 0,        -- openGoodsCount
   FOREIGN KEY (complex_no) REFERENCES complexes(complex_no)
 );
-CREATE UNIQUE INDEX ux_hourly_prices ON hourly_prices(collected_at, complex_no);
+CREATE UNIQUE INDEX ux_hourly_prices_ts_cx ON hourly_prices(collected_at, complex_no);
 
--- 시간 단위 집계 (가격값 자체, 단위 억)
 CREATE TABLE hourly_index (
   collected_at     TIMESTAMP PRIMARY KEY,
-  avg_price        REAL,           -- 억
-  median_price     REAL,           -- 억
-  sample_count     INTEGER,        -- 100 (대상 단지 수)
-  valid_count      INTEGER         -- 매물 존재 단지 수 (sample_count - 결측)
+  avg_price        REAL,                     -- 억
+  median_price     REAL,
+  sample_count     INTEGER,                  -- 100
+  valid_count      INTEGER                   -- 가격 있는 단지 수
 );
 
--- 시간봉 OHLC (1H)
 CREATE TABLE hourly_ohlc (
   ts               TIMESTAMP PRIMARY KEY,
-  avg_open         REAL,
-  avg_high         REAL,
-  avg_low          REAL,
-  avg_close        REAL,
-  median_open      REAL,
-  median_high      REAL,
-  median_low       REAL,
-  median_close     REAL,
-  valid_count      INTEGER
+  avg_open  REAL, avg_high  REAL, avg_low  REAL, avg_close  REAL,
+  median_open REAL, median_high REAL, median_low REAL, median_close REAL,
+  valid_count INTEGER
 );
 
--- 일봉 OHLC (KST 00:00 기준)
 CREATE TABLE daily_ohlc (
   date             DATE PRIMARY KEY,
-  avg_open         REAL,
-  avg_high         REAL,
-  avg_low          REAL,
-  avg_close        REAL,
-  median_open      REAL,
-  median_high      REAL,
-  median_low       REAL,
-  median_close     REAL,
-  hour_count       INTEGER          -- 그 날 집계된 시간봉 개수
+  avg_open  REAL, avg_high  REAL, avg_low  REAL, avg_close  REAL,
+  median_open REAL, median_high REAL, median_low REAL, median_close REAL,
+  hour_count       INTEGER
 );
 
--- 메타 (가변 설정)
 CREATE TABLE meta (
   key              TEXT PRIMARY KEY,
   value            TEXT NOT NULL,
@@ -191,9 +194,11 @@ CREATE TABLE meta (
 );
 ```
 
-## 4. 자치구 cortarNo
+## 4. 자치구 코드
 
-| 자치구 | cortarNo |
+`config.DISTRICTS` — sggBjdCode (10자리, Naver cortarNo 와 동일).
+
+| 자치구 | sggBjdCode |
 |---|---|
 | 강남구 | 1168000000 |
 | 서초구 | 1165000000 |
@@ -204,21 +209,32 @@ CREATE TABLE meta (
 | 동작구 | 1159000000 |
 | 강동구 | 1174000000 |
 
-## 5. 운영 / 배포
+## 5. 배포 (Railway)
 
-- 1차: 로컬 (Windows). Naver IP 차단 시 직접 실행.
-- 2차: **Render 무료 티어** 배포.
-  - `Procfile`: `web: python app.py`
-  - 환경변수 `PORT` 사용 (Flask 자동 바인딩).
-  - Free tier 디스크는 비영속 → SQLite 파일 손실 주의. 장기 운영 시 외부 PostgreSQL/볼륨 검토.
-  - Free tier 슬립 → 외부 cron-ping 또는 UptimeRobot 으로 깨우기.
-- 단지 100개 × 호출 1~2초 ≈ 3~5분/시간 → free tier 1코어로 충분.
+- `railway.toml`: Dockerfile 빌더, `/api/status` 헬스체크, restart on failure (3 retries)
+- `Dockerfile`: `python:3.11-slim` 베이스 (Playwright 제거 → 이미지 ~150MB)
+- Volume: `/app/data` 에 영구 마운트 → SQLite + CSV + 단지 캐시
+- 환경변수: 특별히 없음 (`PORT` 는 Railway 자동 설정)
+- 시작 명령: Dockerfile CMD = `python app.py` (gunicorn 안 씀, APScheduler 가 `if __name__ == "__main__"` 안에 있어서)
 
-## 6. 미정 사항
+## 6. 미매핑 6단지 (정보)
 
-| 항목 | 상태 |
-|---|---|
-| 거래량 데이터 소스 (MOLIT API vs Naver 내부) | TBD — Phase 1 진행 중 결정 |
-| Naver IP 차단 시 fallback (Playwright) | Phase 2-1 에서 결정 |
-| Render free tier DB 영속화 방안 | Phase 6 에서 결정 |
-| 봉차트 단지간 spread 표현 | IQR 기반으로 잠정 결정 (운영하며 조정) |
+richgo_mapping.json `unmatched` 섹션에 기록:
+
+| rank | 자치구 | complex_no | 단지명 | 가능한 이유 |
+|---|---|---|---|---|
+| 17 | 강남구 | 11698 | 도곡렉슬 | 현재 매물 0건? |
+| 57 | 강남구 | 105735 | 강남자곡힐스테이트 | 매물 0건 |
+| 60 | 강남구 | 107458 | 강남한양수자인 | 매물 0건 |
+| 64 | 서초구 | 107901 | 서초더샵포레 | 매물 0건 |
+| 83 | 서초구 | 178737 | 래미안원페를라 | 신축 (입주 직전?) |
+| 84 | 서초구 | 103577 | 서초힐스 | 매물 0건 |
+
+수동 매핑하려면 https://m.richgo.ai/pc 에서 단지명 검색 → URL 의 `realty/danji/[id]` 부분이 danjiId → `richgo_mapping.json` 의 `mapping` 객체에 항목 추가 후 commit.
+
+## 7. 알려진 한계
+
+- **Richgo 의존**: 그들 API 변경 시 깨짐. /api/data/danji/onepage 응답 스키마는 Next.js SPA 분석 결과 파악 — 공식 문서 없음.
+- **OFFER 가격은 일부 단지에만 존재**: 현재 매물이 없는 단지는 RICHGO_SISE (시세) 로 fallback. 두 가격은 의미가 다름 (호가 vs 산출 시세).
+- **24평 외 평형 fallback**: pyeongType 24 가 없으면 25,23,26,22,27,21 순으로 시도. 24 < 60㎡ < 25 의 단지는 pyeong=25 가격으로 잡힘.
+- **Naver 데이터는 갱신 불가**: 새 단지 편입/이탈은 로컬에서 Naver 크롤링 재실행 + complexes.json 갱신 + build_mapping.py 재실행 필요. Railway 에선 못함.
