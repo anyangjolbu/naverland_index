@@ -9,15 +9,16 @@
 현재 `complexes.json` 은 2026-04 시점 Naver 크롤링 결과로 고정.
 신축 입주 / 재건축 / 세대수 변경 등을 반영하려면:
 
-- **현실적 옵션**: 사용자 집 PC 에서 주기적으로 (분기 1회 정도) 옛 Naver 크롤링 코드 실행 → 갱신된 complexes.json 을 repo 에 push → build_mapping.py 재실행
-- **이상적 옵션**: 자체 Naver 크롤러를 집 PC + Cloudflare Tunnel 로 외부 접속 가능하게 두고, Railway 가 호출. 셋업 부담 큼.
+- **현실적 옵션**: 사용자 집 PC 에서 주기적으로 (분기 1회 정도) Naver 직접 크롤러 재실행 → 갱신된 complexes.json 을 repo 에 push → build_mapping.py 재실행. 크롤러 코드는 [NAVER_DIRECT.md](NAVER_DIRECT.md) 에 reference 보존됨 (or `git show 8ac93f5:naver_api.py` 로 복구).
+- **이상적 옵션**: 자체 Naver 크롤러를 집 PC + Cloudflare Tunnel 로 외부 노출 → Railway 가 호출. 셋업 부담 큼.
 
 지금은 미해결 — 단지 풀이 1년 정도는 거의 안 변하므로 우선순위 낮음.
 
 ## 향후 아이디어
 
 ### 데이터 보강
-- [ ] 84㎡, 114㎡ 같은 다른 평형 인덱스 추가 (테이블 + 차트 분리)
+- [ ] 84㎡, 114㎡ 같은 다른 평형 인덱스 추가 (테이블 + 차트 분리). pyeongType 매핑 표 작성 필요 — 24=59㎡전용, 33=84㎡, 45=114㎡ 추정
+- [ ] Naver 직접 크롤러 백업 (집 PC + Cloudflare Tunnel) — Richgo API 변경/폐쇄 대비. [NAVER_DIRECT.md](NAVER_DIRECT.md) 참조
 - [ ] 자치구 추가 (현재 8개 → 25개 서울 전체)
 - [ ] 전세 인덱스 추가 (`tradeType=Jeonse`)
 - [ ] 실거래가 (MOLIT) vs 호가 spread 시각화

@@ -11,6 +11,21 @@
 
 ---
 
+## 2026-05-03 — 문서 정리 + Naver 직접 크롤링 노트 보존
+
+`NAVER_DIRECT.md` 신규 — 클라우드 차단으로 운영에서 빠진 Naver 직접 크롤링 기법을
+**로컬 재사용 가능한 reference 문서** 로 보존:
+- API 엔드포인트 + cortarNo 매핑
+- Bearer 토큰 획득 방법 3가지 (수동 / Playwright 자동 / HTML 폴백)
+- Anti-detection Playwright 셋업 (navigator.webdriver 마스킹 등)
+- 페이지 내 fetch 패턴 (브라우저 컨텍스트로 same-origin + cookie 자동)
+- 4가지 함정 (다중 평형 콜론 syntax, order=prc, dealPriceMin stale, threading)
+- 가격 파싱 / Top 100 선정 / 단지별 수집 알고리즘 코드 스니펫
+- 재사용 시나리오 (canonical 갱신 / 백업 수집기 / 다른 평형 확장)
+
+git history (`naver_api.py`, `compare_prices.py`, `migrate_pyeongs.py`, `test_new_api.py`)
+는 commit 8ac93f5 까지 보존됨 — 필요 시 `git show 8ac93f5:naver_api.py` 로 복구.
+
 ## 2026-05-03 — 매핑 빌더를 search-API 기반으로 전환 (94 → 100/100)
 
 이전 build_mapping.py 는 sgg+emd opengoods 응답으로 풀(1042개) 만들고 fuzzy 매칭 → 94/100. 6개 미매칭은 *Richgo opengoods endpoint 가 현재 매물 있는 단지만 노출* 해서 풀 자체에 들어오지 못함.

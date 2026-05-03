@@ -112,4 +112,4 @@ Richgo `/api/data/danji/onepage` 응답의 `pyeongInfos[24].danjiPriceInfo.memeP
 | 매시간 :02 | 가격 수집만 | ~25초 |
 | 매일 03:30 | 부트스트랩 + 가격 수집 | ~30초 |
 
-자세한 설계: [ARCHITECTURE.md](ARCHITECTURE.md) · 변경사: [HISTORY.md](HISTORY.md) · 향후 아이디어: [ROADMAP.md](ROADMAP.md)
+자세한 설계: [ARCHITECTURE.md](ARCHITECTURE.md) · 변경사: [HISTORY.md](HISTORY.md) · 향후 아이디어: [ROADMAP.md](ROADMAP.md) · Naver 직접 크롤링 노트 (로컬용 백업): [NAVER_DIRECT.md](NAVER_DIRECT.md)
