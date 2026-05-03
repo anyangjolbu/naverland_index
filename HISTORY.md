@@ -11,6 +11,42 @@
 
 ---
 
+## 2026-05-03 — 매핑 빌더를 search-API 기반으로 전환 (94 → 100/100)
+
+이전 build_mapping.py 는 sgg+emd opengoods 응답으로 풀(1042개) 만들고 fuzzy 매칭 → 94/100. 6개 미매칭은 *Richgo opengoods endpoint 가 현재 매물 있는 단지만 노출* 해서 풀 자체에 들어오지 못함.
+
+사용자 의문: "Richgo 검색창은 다 찾는데 너는 왜 못 찾니?" → 검색 페이지 chunk 분석:
+
+- `/realty/search` 페이지 의존 chunk 에서 `/api/data/search-detail` 발견
+- 파라미터 이름 = **`s`** (이전 시도한 keyword/q/name/danji 다 wrong)
+- 호출: `GET /api/data/search?s=<단지명>&danji=true&limit=10`
+- 응답: `result.apartList[*]` — danjiId, danji, bjdInfo (sgg 포함) 등
+- **opengoods 와 무관 — 매물 0건 단지도 발견** ✓
+
+build_mapping.py 전면 재작성:
+- snowball + fuzzy 로직 모두 제거
+- 4단계 검색 전략:
+  1. 원본 이름 + 동일 자치구
+  2. 괄호 제거 (예: "디에이치아너힐즈S-클래스(주상복)" → "디에이치아너힐즈S-클래스")
+  3. "자치구명 + 단지명" (예: "서초구 우성") — 동명이인 disambiguation
+  4. 자치구 명시 + 괄호 제거
+- 동일 자치구 결과만 채택 (다른 자치구 결과는 동명이인 → reject)
+
+결과: **100/100 매핑** (snowball 의 6개 미매칭 + 3개 자치구 mismatch 모두 해결).
+가격 검증: OFFER 92, RICHGO_SISE 6, NULL 1 (래미안원페를라 = 신축 입주직전, 매물 0건 + 시세 미산출 — 정상).
+
+**비교**:
+
+| | snowball + fuzzy (구) | search-API (신) |
+|---|---|---|
+| 호출 패턴 | sgg + emd + leaders × 8구 ≈ 96 calls | 단지명 1개 = 1~4 calls (재시도 포함) |
+| 발견 범위 | 매물 있는 (단지×평형) 만 | 모든 단지 |
+| 매칭 방식 | fuzzy (정규화+substring+자카드) | exact keyword |
+| 커버리지 | 94/100 | **100/100** |
+| 코드 | snowball+fuzzy ~80줄 | search 다단계 ~30줄 |
+
+snowball 은 "전체 단지 풀을 모르는 상태에서 발견" 용으로 적합한데 우리는 이미 canonical 100 이름을 가지고 있어 search-API 가 strictly better.
+
 ## 2026-05-02 — Naver → Richgo 데이터 소스 전환 (Naver IP 차단 우회)
 
 배포 후 처음 데이터 안 들어와서 원인 추적 → **Naver 가 클라우드 IP 의 부동산 도메인 접근을 silent drop** 함을 확인 → 우회 시도 → 모두 실패 → Richgo 로 이전.

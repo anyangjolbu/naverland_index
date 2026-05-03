@@ -125,17 +125,22 @@ SQLite WAL 모드. 스키마는 거의 그대로지만 `complexes` 테이블에 
 
 ### 2.7 `build_mapping.py` (1회성 도구)
 
-로컬에서 실행하는 매핑 빌더:
+로컬에서 실행하는 매핑 빌더 — Richgo 통합 검색 API 사용:
 
-1. 8개 자치구 sgg-level Richgo opengoods 호출 → 50건씩 받음
-2. 응답에서 emd 코드 추출 → emd-level 호출로 풀 확장 (snowball)
-3. `isOnlyLeaders=true` 추가 호출
-4. 자치구당 100~200 unique danji 풀 형성 (총 1042개)
-5. complexes.json 의 100개 와 fuzzy 매칭:
-   - 정규화 후 정확 일치
-   - 양방향 substring
-   - 자카드 유사도 ≥ 0.5
-6. 결과 → `richgo_mapping.json` 저장 (현재 94/100)
+```
+GET https://api-m.richgo.ai/api/data/search?s=<단지명>&danji=true&limit=10
+→ result.apartList[*].{danjiId, danji, bjdInfo.sgg}
+```
+
+각 Naver 단지에 대해 4단계 fallback:
+1. 원본 이름 + 동일 자치구 결과 채택
+2. 괄호 제거 (예: "디에이치아너힐즈S-클래스(주상복)" → "디에이치아너힐즈S-클래스")
+3. "자치구명 + 단지명" (예: "서초구 우성") — 동명이인 disambiguation
+4. 자치구명 + 괄호 제거
+
+동일 자치구 결과가 없으면 unmatched. 100 단지 = ~100~150 calls (보통 1단계에서 잡힘).
+
+이전엔 opengoods snowball + fuzzy 매칭이었으나 그 방식은 *현재 매물 있는 단지만* 발견하므로 신축/매물 0건 단지가 누락 (94/100). search API 는 매물 유무와 무관하게 모든 단지를 키워드로 직접 찾으므로 100/100 커버.
 
 매핑은 정적이므로 commit 후 재실행 불필요 (단지가 새로 추가되거나 Naver 데이터 갱신 시에만).
 
